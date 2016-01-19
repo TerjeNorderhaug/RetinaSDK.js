@@ -1,1 +1,1 @@
-# javascript-client-sdk
+# Cortical.io Retina API JavaScript Client SDK
