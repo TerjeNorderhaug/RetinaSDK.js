@@ -1,2 +1,2 @@
 .idea*
-test/api-key.js
+/test/api-key.js
