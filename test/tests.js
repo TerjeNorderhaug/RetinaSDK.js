@@ -1,5 +1,35 @@
-var cortical = new RetinaApiClient(apiKey);
+/**
+ * Instance of the RetinaApiClient to test.
+ * @type {RetinaApiClient}
+ */
+var cortical = new Cortical.CoreClient(apiKey);
 
+/**
+ * Retina name to use for tests.
+ * @type {string}
+ */
+var defaultRetina = "en_associative";
+
+/**
+ * Simple expression used for testing expression endpoints.
+ * @type {{sub: *[]}}
+ */
+var exampleExpression1 = {
+    "sub": [{
+        "term": "jaguar"
+    }, {
+        "positions": [2, 3, 4, 5, 6]
+    }]
+};
+
+/**
+ * Simple expression used for testing expression endpoints.
+ */
+var exampleExpression2 = {"term": "Pablo Picasso"};
+
+/**
+ * Example texts to use during tests.
+ */
 var texts = {};
 
 texts["Vienna"] = "Vienna is the capital and largest city of Austria, and one of the nine states of Austria. Vienna" +
@@ -66,13 +96,305 @@ texts["Skylab"] = "Skylab was a space station launched and operated by NASA and 
     " atop the smaller Saturn IB, each delivered a three-astronaut crew. On the last two manned missions, an" +
     " additional Apollo / Saturn IB stood by ready to rescue the crew in orbit if it was needed.";
 
+/**
+ * Tests retrieving Retinas.
+ */
 QUnit.asyncTest("testGetRetinas", function (assert) {
     assert.expect(1);
 
-    var callback = function (data) {
-        // assert.equal(counter, 1);
+    var callback = function (retinas) {
+        assert.ok(retinas.length > 1, "Return multiple Retinas.");
         QUnit.start();
     };
 
-    cortical.core.getRetinas(null, callback);
+    cortical.getRetinas(callback);
 });
+
+/**
+ * Tests retrieving a specific Retina.
+ */
+QUnit.asyncTest("testGetSpecificRetina", function (assert) {
+    assert.expect(1);
+
+    var callback = function (retinas) {
+        assert.equal(retinas[0].retinaName, defaultRetina, "Return specific Retina.");
+        QUnit.start();
+    };
+
+    cortical.getRetinas({retina_name: defaultRetina}, callback);
+});
+
+QUnit.asyncTest("testGetTerms", function (assert) {
+    assert.expect(1);
+
+    var callback = function (terms) {
+        assert.ok(terms.length > 1, "Return multiple terms.");
+        QUnit.start();
+    };
+
+    cortical.getTerms(callback);
+});
+
+QUnit.asyncTest("testGetTermInfo", function (assert) {
+    assert.expect(1);
+
+    var termString = "test";
+
+    var callback = function (term) {
+        assert.equal(term[0].term, termString, "Return specific term.");
+        QUnit.start();
+    };
+
+    cortical.getTerms(termString, callback);
+});
+
+QUnit.asyncTest("testGetTermsWithParams", function (assert) {
+    assert.expect(1);
+
+    var termString = "abc*";
+    var length = 20;
+
+    var callback = function (terms) {
+        assert.ok(terms.length == length, "Return fixed number of terms.");
+        QUnit.start();
+    };
+
+    cortical.getTerms({term: termString, start_index: 0, max_results: length}, callback);
+});
+
+QUnit.asyncTest("testGetContextsForTerm", function (assert) {
+    assert.expect(2);
+
+    var termString = "test";
+
+    var callback = function (contexts) {
+        assert.ok(contexts.length > 1, "Return multiple contexts.");
+        assert.ok(typeof contexts[0].context_id != 'undefined', "Contexts has an ID.");
+        QUnit.start();
+    };
+
+    cortical.getContextsForTerm(termString, callback);
+});
+
+QUnit.asyncTest("testGetContextsForTermWithFingerprints", function (assert) {
+    assert.expect(1);
+
+    var termString = "test";
+
+    var callback = function (contexts) {
+        assert.ok(contexts[0].fingerprint.positions.length > 1, "Contexts contain fingerprints.");
+        QUnit.start();
+    };
+
+    cortical.getContextsForTerm({term: termString, get_fingerprint: true}, callback);
+});
+
+QUnit.asyncTest("testGetSimilarTermsForTerm", function (assert) {
+    assert.expect(2);
+
+    var termString = "test";
+
+    var callback = function (similarTerms) {
+        assert.ok(similarTerms.length > 1, "Return multiple similar terms.");
+        assert.equal(similarTerms[0].term, termString, "Most similar term is query term.");
+        QUnit.start();
+    };
+
+    cortical.getSimilarTermsForTerm({term: termString, get_fingerprint: true}, callback);
+});
+
+QUnit.asyncTest("testGetFingerprintForText", function (assert) {
+    assert.expect(1);
+
+    var callback = function (fingerprint) {
+        assert.ok(fingerprint[0].positions.length > 1, "Return fingerprint.");
+        QUnit.start();
+    };
+
+    cortical.getFingerprintForText(texts["Vienna"], callback);
+});
+
+QUnit.asyncTest("testGetTokensForText", function (assert) {
+    assert.expect(1);
+
+    var callback = function (tokens) {
+        assert.ok(tokens.length > 1, "Return tokens.");
+        QUnit.start();
+    };
+
+    cortical.getTokensForText(texts["Vienna"], callback);
+});
+
+QUnit.asyncTest("testGetTokensForTextWithPOSFilter", function (assert) {
+    assert.expect(1);
+
+    var callback = function (tokens) {
+        assert.ok(tokens[0].length < 20, "Return reduced tokens.");
+        QUnit.start();
+    };
+
+    cortical.getTokensForText({body: texts["Vienna"], POStags: "NN"}, callback);
+});
+
+QUnit.asyncTest("testGetSlicesForText", function (assert) {
+    assert.expect(3);
+
+    var callback = function (slices) {
+        assert.ok(slices.length > 1, "Return multiple slices.");
+        assert.ok(slices[0].text.indexOf("synapse") > -1, "First slice contains synapse text");
+        assert.ok(slices[1].text.indexOf("Skylab") > -1, "Second slice contains Skylab text");
+        QUnit.start();
+    };
+
+    cortical.getSlicesForText(texts["Synapse"] + texts["Skylab"], callback);
+});
+
+QUnit.asyncTest("testGetFingerprintsForTexts", function (assert) {
+    assert.expect(3);
+
+    var callback = function (fingerprints) {
+        assert.ok(fingerprints.length > 1, "Return multiple fingerprints.");
+        assert.ok(fingerprints[0].positions.length > 1, "Fingerprint 1 contains positions.");
+        assert.ok(fingerprints[1].positions.length > 1, "Fingerprint 2 contains positions.");
+        QUnit.start();
+    };
+
+    cortical.getFingerprintsForTexts([texts["Synapse"], texts["Skylab"]], callback);
+});
+
+QUnit.asyncTest("testGetLanguageForTexts", function (assert) {
+    assert.expect(1);
+
+    var callback = function (language) {
+        assert.ok(language.iso_tag == "en", "Return correct language.");
+        QUnit.start();
+    };
+
+    cortical.getLanguageForText(texts["Synapse"], callback);
+});
+
+QUnit.asyncTest("testGetFingerprintForExpression", function (assert) {
+    assert.expect(1);
+
+    var callback = function (fingerprint) {
+        assert.ok(fingerprint.positions.length > 1, "Fingerprint contains positions.");
+        QUnit.start();
+    };
+
+    cortical.getFingerprintForExpression(exampleExpression1, callback);
+});
+
+QUnit.asyncTest("testGetContextsForExpression", function (assert) {
+    assert.expect(2);
+
+    var callback = function (contexts) {
+        assert.ok(contexts.length > 1, "Return multiple contexts.");
+        assert.ok(typeof contexts[0].context_id != 'undefined', "Contexts has an ID.");
+        QUnit.start();
+    };
+
+    cortical.getContextsForExpression(exampleExpression1, callback);
+});
+
+QUnit.asyncTest("testGetSimilarTermsForExpression", function (assert) {
+    assert.expect(2);
+
+    var callback = function (similarTerms) {
+        assert.ok(similarTerms.length > 1, "Return multiple similar terms.");
+        assert.ok(typeof similarTerms[0].term == 'string', "Similar term contains a term field.");
+        QUnit.start();
+    };
+
+    cortical.getSimilarTermsForExpression(exampleExpression1, callback);
+});
+
+QUnit.asyncTest("testGetFingerprintsForExpressions", function (assert) {
+    assert.expect(3);
+
+    var callback = function (fingerprints) {
+        assert.ok(fingerprints.length > 1, "Return multiple fingerprints.");
+        assert.ok(fingerprints[0].positions.length > 1, "Fingerprint 1 contains positions.");
+        assert.ok(fingerprints[1].positions.length > 1, "Fingerprint 2 contains positions.");
+        QUnit.start();
+    };
+
+    cortical.getFingerprintsForExpressions([exampleExpression1, exampleExpression1], callback);
+});
+
+QUnit.asyncTest("testGetContextsForExpressions", function (assert) {
+    assert.expect(2);
+
+    var callback = function (contextLists) {
+        assert.ok(contextLists.length > 1, "Return multiple contexts.");
+        assert.ok(typeof contextLists[0][0].context_id != 'undefined', "Contexts has an ID.");
+        QUnit.start();
+    };
+
+    cortical.getContextsForExpressions([exampleExpression1, exampleExpression1], callback);
+});
+
+QUnit.asyncTest("testGetSimilarTermsForExpressions", function (assert) {
+    assert.expect(2);
+
+    var callback = function (similarTermsLists) {
+        assert.ok(similarTermsLists.length > 1, "Return multiple similar terms.");
+        assert.ok(typeof similarTermsLists[0][0].term == 'string', "Similar term contains a term field.");
+        QUnit.start();
+    };
+
+    cortical.getSimilarTermsForExpressions([exampleExpression1, exampleExpression1], callback);
+});
+
+QUnit.asyncTest("testCompare", function (assert) {
+    assert.expect(1);
+
+    var callback = function (comparisonMetric) {
+        assert.ok(comparisonMetric.cosineSimilarity > 0.1, "Return valid cosine similarity");
+        QUnit.start();
+    };
+
+    cortical.compare([{text: texts["Synapse"]}, {text: texts["Skylab"]}], callback);
+});
+
+QUnit.asyncTest("testCompareBulk", function (assert) {
+    assert.expect(1);
+
+    var callback = function (comparisonMetrics) {
+        var cosine1 = comparisonMetrics[0].cosineSimilarity;
+        var cosine2 = comparisonMetrics[1].cosineSimilarity;
+        assert.ok(cosine1 > cosine2, "Return valid cosine similarities");
+        QUnit.start();
+    };
+
+    var comparison1 = [{text: texts["Synapse"]}, {text: texts["Skylab"]}];
+    var comparison2 = [{text: texts["Mir"]}, {text: texts["Skylab"]}];
+
+    cortical.compareBulk([comparison1, comparison2], callback);
+});
+
+QUnit.asyncTest("testImage", function (assert) {
+    assert.expect(1);
+
+    var callback = function (image) {
+        debugger;
+        QUnit.start();
+    };
+
+    cortical.getImage({body: {text: "test"}, retina_name: "en_associative", "image_scalar": "2", plot_shape: "circle", image_encoding: "base64/png", sparsity: "1.0"}, callback);
+});
+
+// TODO api.core.getImage
+
+// TODO api.core.getImages
+
+// TODO api.core.compareImage
+
+// TODO api.core.createCategoryFilter
+
+// TODO api.basic.getSimilarTerms
+
+// TODO api.basic.getKeywords
+
+// TODO api.basic.getFingerprint
+
+// TODO api.basic.compare

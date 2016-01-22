@@ -1,7 +1,12 @@
 /**
- * Cortical.io Retina API client.
+ * Main Cortical.io Retina API Client module.
  */
-var RetinaApiClient = (function (apiKey, apiServer, retina) {
+var Cortical = {};
+
+/**
+ * Cortical.io Core Retina API client.
+ */
+Cortical.CoreClient = (function (apiKey, apiServer, retina) {
 
     if (typeof apiKey === 'undefined') {
         throw new Error('Required apiKey argument was missing.')
@@ -29,7 +34,7 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
         // Prepend API server to request URL
         url = apiServer + url;
 
-        if (typeof params === 'undefined') {
+        if (params == null || typeof params === 'undefined') {
             params = {};
         }
 
@@ -37,15 +42,24 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
         var isAsync = (typeof callback != "undefined");
         httpRequest.open(type, url, isAsync);
 
-        httpRequest.setRequestHeader("Accept", "application/json");
+        if (url.indexOf("/image") >= 0) {
+            httpRequest.setRequestHeader("Accept", "image/png");
+        } else {
+            httpRequest.setRequestHeader("Accept", "application/json");
+        }
         httpRequest.setRequestHeader("Content-type", "application/json");
         httpRequest.setRequestHeader("api-key", apiKey);
+        httpRequest.setRequestHeader("api-client", "js_1.0");
 
         if (isAsync) {
 
             httpRequest.onreadystatechange = function () {
                 if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-                    callback(JSON.parse(httpRequest.responseText));
+                    if (httpRequest.responseURL.indexOf("/rest/image") == -1) {
+                        callback(JSON.parse(httpRequest.responseText));
+                    } else {
+                        callback(httpRequest.responseText);
+                    }
                 }
             };
 
@@ -53,7 +67,12 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
 
         } else {
             httpRequest.send(params);
-            return JSON.parse(httpRequest.responseText);
+            if (httpRequest.responseURL.indexOf("/rest/image") == -1) {
+                return JSON.parse(httpRequest.responseText);
+            } else {
+                return callback(httpRequest.responseText);
+            }
+
         }
 
     }
@@ -67,6 +86,11 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     function get(url, params, callback) {
+
+        // Add default retina_name parameter if needed
+        if (params && typeof params.retina_name === 'undefined' && url.indexOf("/retinas") == -1) {
+            params.retina_name = retina;
+        }
 
         // Append params to URL
         var first = true;
@@ -97,6 +121,12 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      */
     function post(url, params, callback) {
 
+
+        // Add default retina_name parameter if needed
+        if (params && typeof params.retina_name === 'undefined') {
+            params.retina_name = retina;
+        }
+
         // Append params to URL
         var first = true;
         for (var key in params) {
@@ -121,11 +151,8 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
         return sendRequest(url, "POST", JSON.stringify(params.body), callback);
     }
 
-    // Public module.
+    // Public methods.
     var api = {};
-
-    // Core API module.
-    api.core = {};
 
     /**
      * Returns available Retinas.
@@ -142,7 +169,11 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getRetinas = function (params, callback) {
+    api.getRetinas = function (params, callback) {
+        if (typeof params === 'function') {
+            callback = params;
+            params = null;
+        }
         return get("retinas", params, callback);
     };
 
@@ -173,8 +204,13 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getTerms = function (params, callback) {
-        // TODO checkRequiredParams("retina_name", params);
+    api.getTerms = function (params, callback) {
+        if (typeof params === 'function') {
+            callback = params;
+            params = null;
+        } else if (typeof params === 'string') {
+            params = {term: params}
+        }
         return get("terms", params, callback);
     };
 
@@ -194,7 +230,10 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getContextsForTerm = function (params, callback) {
+    api.getContextsForTerm = function (params, callback) {
+        if (typeof params === 'string') {
+            params = {term: params}
+        }
         return get("terms/contexts", params, callback);
     };
 
@@ -221,7 +260,7 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getSimilarTermsForTerm = function (params, callback) {
+    api.getSimilarTermsForTerm = function (params, callback) {
         return get("terms/similar_terms", params, callback);
     };
 
@@ -236,7 +275,10 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getFingerprintForText = function (params, callback) {
+    api.getFingerprintForText = function (params, callback) {
+        if (typeof params === 'string') {
+            params = {body: params}
+        }
         return post("text", params, callback);
     };
 
@@ -251,7 +293,7 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getKeywordsForText = function (params, callback) {
+    api.getKeywordsForText = function (params, callback) {
         return post("text/keywords", params, callback);
     };
 
@@ -264,7 +306,10 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getTokensForText = function (params, callback) {
+    api.getTokensForText = function (params, callback) {
+        if (typeof params === 'string') {
+            params = {body: params}
+        }
         return post("text/tokenize", params, callback);
     };
 
@@ -277,7 +322,10 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getSlicesForText = function (params, callback) {
+    api.getSlicesForText = function (params, callback) {
+        if (typeof params === 'string') {
+            params = {body: params}
+        }
         return post("text/slices", params, callback);
     };
 
@@ -290,7 +338,12 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getFingerprintForBulkText = function (params, callback) {
+    api.getFingerprintsForTexts = function (params, callback) {
+        var length = params.length;
+        for (var i = 0; i < length; i++) {
+            params[i] = {"text": params[i]};
+        }
+        params = {body: params};
         return post("text/bulk", params, callback);
     };
 
@@ -307,7 +360,10 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getLanguageForText = function (params, callback) {
+    api.getLanguageForText = function (params, callback) {
+        if (typeof params === 'string') {
+            params = {body: params}
+        }
         return post("text/detect_language", params, callback);
     };
 
@@ -322,8 +378,8 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getFingerprintForExpression = function (params, callback) {
-        return post("expressions", params, callback);
+    api.getFingerprintForExpression = function (params, callback) {
+        return post("expressions", {body: params}, callback);
     };
 
     /**
@@ -337,8 +393,8 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getContextsForExpression = function (params, callback) {
-        return post("expressions/contexts", params, callback);
+    api.getContextsForExpression = function (params, callback) {
+        return post("expressions/contexts", {body: params}, callback);
     };
 
     /**
@@ -352,8 +408,8 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getSimilarTermsForExpression = function (params, callback) {
-        return post("expressions/similar_terms", params, callback);
+    api.getSimilarTermsForExpression = function (params, callback) {
+        return post("expressions/similar_terms", {body: params}, callback);
     };
 
     /**
@@ -367,8 +423,8 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getFingerprintsForTexts = function (params, callback) {
-        return post("expressions/bulk", params, callback);
+    api.getFingerprintsForExpressions = function (params, callback) {
+        return post("expressions/bulk", {body: params}, callback);
     };
 
     /**
@@ -382,8 +438,8 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getContextsForExpressions = function (params, callback) {
-        return post("expressions/contexts/bulk", params, callback);
+    api.getContextsForExpressions = function (params, callback) {
+        return post("expressions/contexts/bulk", {body: params}, callback);
     };
 
     /**
@@ -397,8 +453,8 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getSimilarTermsForExpressions = function (params, callback) {
-        return post("expressions/similar_terms/bulk", params, callback);
+    api.getSimilarTermsForExpressions = function (params, callback) {
+        return post("expressions/similar_terms/bulk", {body: params}, callback);
     };
 
     /**
@@ -412,8 +468,8 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.compare = function (params, callback) {
-        return post("compare", params, callback);
+    api.compare = function (params, callback) {
+        return post("compare", {body: params}, callback);
     };
 
     /**
@@ -427,8 +483,8 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.compareBulk = function (params, callback) {
-        return post("compare/bulk", params, callback);
+    api.compareBulk = function (params, callback) {
+        return post("compare/bulk", {body: params}, callback);
     };
 
     /**
@@ -442,7 +498,7 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.getImage = function (params, callback) {
+    api.getImage = function (params, callback) {
         return post("image", params, callback);
     };
 
@@ -457,7 +513,7 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.compareImage = function (params, callback) {
+    api.compareImage = function (params, callback) {
         return post("image/compare", params, callback);
     };
 
@@ -472,7 +528,7 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.compareImages = function (params, callback) {
+    api.compareImages = function (params, callback) {
         return post("image/compare/bulk", params, callback);
     };
 
@@ -487,12 +543,24 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.core.createCategoryFilter = function (params, callback) {
+    api.createCategoryFilter = function (params, callback) {
+        // TODO two lists
         return post("classify/create_category_filter", params, callback);
     };
 
+    return api;
+
+});
+
+/**
+ * Cortical.io Basic Retina API client.
+ */
+Cortical.BasicClient = (function (apiKey, apiServer, retina) {
+
+    var core = new Cortical.CoreClient(apiKey, apiServer, retina);
+
     // Lightweight API module.
-    api.basic = {};
+    var basic = {};
 
     /**
      * Returns an array of similar terms for a given text.
@@ -501,9 +569,9 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback an optional callback function to apply to the returned similar terms.
      * @returns {*}
      */
-    api.basic.getSimilarTerms = function (text, callback) {
+    basic.getSimilarTerms = function (text, callback) {
         callback = wrapCallback(callback, extractSimilarTerms);
-        var response = api.core.getSimilarTermsForExpression({retina_name: retina, body: {text: text}}, callback);
+        var response = core.getSimilarTermsForExpression({body: {text: text}}, callback);
         return extractSimilarTerms(response);
     };
 
@@ -514,8 +582,8 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback an optional callback function to apply to the returned keywords.
      * @returns {*}
      */
-    api.basic.getKeywords = function (text, callback) {
-        return api.core.getKeywordsForText({retina_name: retina, body: text}, callback)
+    basic.getKeywords = function (text, callback) {
+        return core.getKeywordsForText({body: text}, callback)
     };
 
     /**
@@ -525,9 +593,9 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback an optional callback function to apply to the returned Fingerprint.
      * @returns {*}
      */
-    api.basic.getFingerprint = function (text, callback) {
+    basic.getFingerprint = function (text, callback) {
         callback = wrapCallback(callback, extractPositions);
-        var response = api.core.getFingerprintForText({retina_name: retina, body: text}, callback);
+        var response = core.getFingerprintForText({body: text}, callback);
         return extractPositions(response);
     };
 
@@ -539,27 +607,19 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
      * @param callback
      * @returns {*}
      */
-    api.basic.compare = function (object1, object2, callback) {
+    basic.compare = function (object1, object2, callback) {
 
         callback = wrapCallback(callback, extractCosineSimilarity);
         var response;
 
         if (typeof object1 === "string" && typeof object2 === "string") {
-            response = api.core.compare({
-                retina_name: "en_associative", body: [{text: object1}, {text: object2}]
-            }, callback);
+            response = core.compare([{text: object1}, {text: object2}], callback);
         } else if (typeof object1 === "object" && typeof object2 === "object") {
-            response = api.core.compare({
-                retina_name: "en_associative", body: [{positions: object1}, {positions: object2}]
-            }, callback);
+            response = core.compare([{positions: object1}, {positions: object2}], callback);
         } else if (typeof object1 === "string" && typeof object2 === "object") {
-            response = api.core.compare({
-                retina_name: "en_associative", body: [{text: object1}, {positions: object2}]
-            }, callback);
+            response = core.compare([{text: object1}, {positions: object2}], callback);
         } else if (typeof object1 === "object" && typeof object2 === "string") {
-            response = api.core.compare({
-                retina_name: "en_associative", body: [{positions: object1}, {text: object2}]
-            }, callback);
+            response = core.compare([{positions: object1}, {text: object2}], callback);
         } else {
             throw new Error("Unable to compute cosine similarity between '" + object1 + "' and '" + object2 + "'");
         }
@@ -625,6 +685,6 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
         return callback;
     }
 
-    return api;
+    return basic;
 
 });
