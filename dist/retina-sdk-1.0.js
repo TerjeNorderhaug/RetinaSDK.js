@@ -8,7 +8,7 @@ var RetinaApiClient = (function (apiKey, apiServer, retina) {
     }
 
     if (typeof apiServer === 'undefined') {
-        apiServer = "http://api.cortical.io/rest/"
+        apiServer = "http://api.fullClient.io/rest/"
     }
 
     if (typeof retina === 'undefined') {
