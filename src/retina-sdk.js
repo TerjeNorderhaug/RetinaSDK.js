@@ -1,12 +1,12 @@
 /**
  * Main Cortical.io Retina SDK Client module.
  */
-var corticalio = {};
+var retinaSDK = {};
 
 /**
  * Cortical.io Full Retina SDK client.
  */
-corticalio.FullClient = (function (apiKey, apiServer, retina) {
+retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
 
     if (typeof apiKey == 'undefined') {
         throw new Error('Required apiKey argument was missing.');
@@ -201,6 +201,17 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
         return callback;
     }
 
+    /**
+     * Converts a single callback function to a callbacks object with the passed callback defined as the success
+     * function.
+     *
+     * @param callback the callback function to wrap.
+     * @returns {{success: *}}
+     */
+    function wrapAsSuccessCallback(callback) {
+        return {success: callback};
+    }
+
     // Public methods
     var api = {};
 
@@ -224,6 +235,12 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     api.getRetinas = function (params, callbacks) {
+        if (typeof params == 'function') {
+            callbacks =  wrapAsSuccessCallback(params);
+        }
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         return get("retinas", params, callbacks);
     };
 
@@ -259,8 +276,13 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     api.getTerms = function (params, callbacks) {
-        if (typeof params == 'string') {
+        if (typeof params == 'function') {
+            callbacks =  wrapAsSuccessCallback(params);
+        } else if (typeof params == 'string') {
             params = {term: params}
+        }
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
         }
         return get("terms", params, callbacks);
     };
@@ -289,6 +311,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
     api.getContextsForTerm = function (params, callbacks) {
         if (typeof params == 'string') {
             params = {term: params}
+        }
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
         }
         checkForRequiredParameters(params, ["term"]);
         return get("terms/contexts", params, callbacks);
@@ -326,6 +351,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
         if (typeof params == 'string') {
             params = {term: params}
         }
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         checkForRequiredParameters(params, ["term"]);
         return get("terms/similar_terms", params, callbacks);
     };
@@ -346,6 +374,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
     api.getFingerprintForText = function (params, callbacks) {
         if (typeof params == 'string') {
             params = {body: params}
+        }
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
         }
         if (callbacks && typeof callbacks.success == 'function') {
             callbacks.success = wrapCallback(callbacks.success, extractPositionsFromFingerprintArray);
@@ -369,6 +400,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
     api.getKeywordsForText = function (params, callbacks) {
         if (typeof params == 'string') {
             params = {body: params}
+        }
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
         }
         return post("text/keywords", params, callbacks);
     };
@@ -398,6 +432,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
         } else if (params['pos_tags']) {
             params['POStags'] = params['pos_tags'];
             delete params['pos_tags'];
+        }
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
         }
         checkForRequiredParameters(params, ["body"]);
         return post("text/tokenize", params, callbacks);
@@ -431,6 +468,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
         if (typeof params == 'string') {
             params = {body: params}
         }
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         checkForRequiredParameters(params, ["body"]);
         return post("text/slices", params, callbacks);
     };
@@ -458,6 +498,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
             }
             params = {body: params};
         }
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         checkForRequiredParameters(params, ["body"]);
         return post("text/bulk", params, callbacks);
     };
@@ -481,6 +524,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
     api.getLanguageForText = function (params, callbacks) {
         if (typeof params == 'string') {
             params = {body: params};
+        }
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
         }
         checkForRequiredParameters(params, ["body"]);
         return post("text/detect_language", params, callbacks);
@@ -510,6 +556,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     api.getFingerprintForExpression = function (params, callbacks) {
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         if (callbacks && typeof callbacks.success == 'function') {
             callbacks.success = wrapCallback(callbacks.success, extractPositionsFromFingerprint);
         }
@@ -549,6 +598,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     api.getContextsForExpression = function (params, callbacks) {
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         checkForRequiredParameters(params, ["body"]);
         return post("expressions/contexts", params, callbacks);
     };
@@ -592,6 +644,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     api.getSimilarTermsForExpression = function (params, callbacks) {
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         checkForRequiredParameters(params, ["body"]);
         return post("expressions/similar_terms", params, callbacks);
     };
@@ -620,6 +675,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     api.getFingerprintsForExpressions = function (params, callbacks) {
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         checkForRequiredParameters(params, ["body"]);
         return post("expressions/bulk", params, callbacks);
     };
@@ -656,6 +714,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     api.getContextsForExpressions = function (params, callbacks) {
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         checkForRequiredParameters(params, ["body"]);
         return post("expressions/contexts/bulk", params, callbacks);
     };
@@ -700,6 +761,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     api.getSimilarTermsForExpressions = function (params, callbacks) {
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         checkForRequiredParameters(params, ["body"]);
         return post("expressions/similar_terms/bulk", params, callbacks);
     };
@@ -726,6 +790,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     api.compare = function (params, callbacks) {
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         checkForRequiredParameters(params, ["body"]);
         return post("compare", params, callbacks);
     };
@@ -753,6 +820,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     api.compareBulk = function (params, callbacks) {
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         checkForRequiredParameters(params, ["body"]);
         return post("compare/bulk", params, callbacks);
     };
@@ -790,6 +860,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
     api.getImage = function (params, callbacks) {
         if (typeof params == 'string') {
             params = {body: {text: params}}
+        }
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
         }
         params['image_scalar'] = params['image_scalar'] || "2";
         params['plot_shape'] = params['plot_shape'] || "circle";
@@ -833,6 +906,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     api.getImages = function (params, callbacks) {
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         params['image_scalar'] = params['image_scalar'] || "2";
         params['plot_shape'] = params['plot_shape'] || "circle";
         params['sparsity'] = params['sparsity'] || "1.0";
@@ -868,6 +944,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     api.compareImage = function (params, callbacks) {
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         params['image_scalar'] = params['image_scalar'] || "2";
         params['plot_shape'] = params['plot_shape'] || "circle";
         params['image_encoding'] = params['image_encoding'] || "base64/png";
@@ -899,6 +978,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     api.createCategoryFilter = function (params, callbacks) {
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         checkForRequiredParameters(params, ["filter_name", "body"]);
         checkForRequiredParameters(params['body'], ["positiveExamples"]);
         return post("classify/create_category_filter", params, callbacks);
@@ -911,9 +993,9 @@ corticalio.FullClient = (function (apiKey, apiServer, retina) {
 /**
  * Cortical.io Lightweight Retina SDK client.
  */
-corticalio.LiteClient = (function (apiKey, apiServer, retina) {
+retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
 
-    var full = new corticalio.FullClient(apiKey, apiServer, retina);
+    var full = new retinaSDK.FullClient(apiKey, apiServer, retina);
 
     // Lightweight SDK module.
     var lite = {};
