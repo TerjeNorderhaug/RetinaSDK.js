@@ -1015,6 +1015,9 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
         } else {
             throw new Error("Invalid input for getSimilarTerms call: " + input);
         }
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         if (callbacks && typeof callbacks.success == "function") {
             callbacks.success = wrapCallback(callbacks.success, extractSimilarTerms);
         }
@@ -1030,6 +1033,9 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     lite.getKeywords = function (text, callbacks) {
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         return full.getKeywordsForText(text, callbacks);
     };
 
@@ -1041,6 +1047,9 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     lite.getFingerprint = function (text, callbacks) {
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         return full.getFingerprintForText(text, callbacks);
     };
 
@@ -1054,6 +1063,9 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
      */
     lite.compare = function (object1, object2, callbacks) {
 
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         if (callbacks && typeof callbacks.success == "function") {
             callbacks.success = wrapCallback(callbacks.success, extractCosineSimilarity);
         }
@@ -1092,6 +1104,9 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
             }
         }
 
+        if (typeof callbacks == 'function') {
+            callbacks =  wrapAsSuccessCallback(callbacks);
+        }
         if (callbacks && typeof callbacks.success == "function") {
             callbacks.success = wrapCallback(callbacks.success, extractPositions);
         }
@@ -1157,6 +1172,17 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
             }
         }
         return callback;
+    }
+
+    /**
+     * Converts a single callback function to a callbacks object with the passed callback defined as the success
+     * function.
+     *
+     * @param callback the callback function to wrap.
+     * @returns {{success: *}}
+     */
+    function wrapAsSuccessCallback(callback) {
+        return {success: callback};
     }
 
     return lite;
