@@ -96,6 +96,7 @@ Callbacks can either be a single function or an object with two named functions,
 process normal responses or deal with failed requests. If only a single function is passed, it will be assumed to be 
 the success function and failed requests will result in an exception.
 
+```javascript
 /* Asynchronously retrieve similar terms with a callback */
 lite.getSimilarTerms("javascript", function(similarTerms) {
     console.log(similarTerms)
@@ -107,7 +108,7 @@ lite.getSimilarTerms("javascript", {success: function(similarTerms) {
 }, error: function(response){
  // handle error
 }});
-
+```
 
 #### Available Functions and Parameters
 
