@@ -86,10 +86,10 @@ lite.createCategoryFilter(["neuron", "synapse", "retina", "neocortex"])
 
 #### Callbacks
 
-The above examples show basic use of the lite client without using callback functions to process the responses. 
-But since each call to the LiteClient results in an HTTP request being made to the Cortical.io API, it is highly 
-recommended to pass a callback function as part of each method call to handle the resulting response. While the 
-callback parameter is technically optional, if it is missing, the HTTP requests made will block code execution until 
+The above examples show basic use of the lite client without callback functions to process the responses. But since 
+each call to the LiteClient results in an HTTP request being made to the Cortical.io API, it is highly recommended 
+to pass a callback function as part of each method call to handle the resulting response. While the callback 
+parameter is technically optional, if it is missing, the HTTP requests made will block code execution until 
 a response is received, which can result in poor application performance.
 
 Callbacks can either be a single function or an object with two named functions, success and error, which will 
@@ -97,16 +97,16 @@ process normal responses or deal with failed requests. If only a single function
 the success function and failed requests will result in an exception.
 
 ```javascript
-/* Asynchronously retrieve similar terms with a callback */
+/* Asynchronously retrieve similar terms with a callback function */
 lite.getSimilarTerms("javascript", function(similarTerms) {
     console.log(similarTerms)
 });
 
-/* Asynchronously retrieve similar terms with a callback */
+/* Asynchronously retrieve similar terms with an object containing success and error callbacks */
 lite.getSimilarTerms("javascript", {success: function(similarTerms) {
- console.log(similarTerms)
+    console.log(similarTerms)
 }, error: function(response){
- // handle error
+    // handle error
 }});
 ```
 
