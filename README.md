@@ -80,8 +80,15 @@ lite.compare(appleFP, "microsoft")
 > 0.4024390243902438
 
 /* Construct a composite Fingerprint from an array of texts to use for semantic filtering */
-lite.createCategoryFilter(["neuron", "synapse", "retina", "neocortex"])
+var neurologyFilter = lite.createCategoryFilter(["neuron", "synapse", "neocortex"])
+console.log(neurologyFilter)
 > Array[677]
+
+/* Use the neurologyFilter computed above to compare and classify new texts. */ 
+lite.compare(neurologyFilter, "skylab")
+> 0.056544622895956895
+lite.compare(neurologyFilter, "cortical column")
+> 0.35455851788907006
 ```
 
 #### Callbacks
