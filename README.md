@@ -115,6 +115,7 @@ lite.getSimilarTerms("javascript", {success: function(similarTerms) {
 }, error: function(response){
     // handle error
 }});
+```
 
 ### Full Client
 
