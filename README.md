@@ -86,9 +86,9 @@ console.log(neurologyFilter)
 
 /* Use the neurologyFilter computed above to compare and classify new texts. */ 
 lite.compare(neurologyFilter, "skylab")
-> 0.056544622895956895
+> 0.056544622895956895 // low semantic similarity -> negative classification
 lite.compare(neurologyFilter, "cortical column")
-> 0.35455851788907006
+> 0.35455851788907006 // high semantic similarity -> positive classification
 ```
 
 #### Callbacks
@@ -115,14 +115,22 @@ lite.getSimilarTerms("javascript", {success: function(similarTerms) {
 }, error: function(response){
     // handle error
 }});
-```
-
-#### Available Functions and Parameters
 
 ### Full Client
 
 TODO instantiate full client
 
 ```javascript
+/* Create full client instance */
 var full = retinaSDK.FullClient(your_api_key)
 ```
+
+#### Callbacks
+
+As with the LiteClient, all calls to the FullClient accept an optional callback parameter that can either be a single
+ function or an object with two named functions, success and error, which will process normal responses or deal with 
+ failed requests. If only a single function is passed, it will be assumed to be the success function and failed 
+ requests will result in an exception.
+
+
+#### Available Functions and Parameters
