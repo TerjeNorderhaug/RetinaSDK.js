@@ -53,10 +53,12 @@ Once you've created a client instance, you can start using it to make calls to t
 
 ```javascript
 /* Retrieve similar terms */
-var similarTerms = lite.getSimilarTerms("javascript");
-console.log(similarTerms)
-// Output: ["javascript", "browser", "html", "browsers", "api", "xml", "functionality", "microsoft", "runtime", 
-"perl", "implementations", "css", "software", "unix", "files", "gui", "server", "plugin", "internet explorer", "linux"]
+lite.getSimilarTerms("javascript");
+> ["javascript", "browser", "html", "browsers", "api", "xml", "functionality", "microsoft", "runtime", "perl", "implementations", "css", "software", "unix", "files", "gui", "server", "plugin", "internet explorer", "linux"]
+
+lite.getKeywords("Vienna is the capital and largest city of Austria, and one of the nine states of Austria");
+> ["austria", "vienna"]
+
 ```
 
 #### Callbacks
