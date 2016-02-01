@@ -173,11 +173,17 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 			<td>start_index (number), max_results (number), get_fingerprint (boolean)</td>
 		</tr>
 		<tr>
-			<td>Returns an array of similar terms for the specified input term.</td>
 			<td>getSimilarTermsForTerm</td>
+			<td>Returns an array of similar terms for the specified input term.</td>
 			<td>term (string)</td>
 			<td>context_id (number), start_index (number), max_results (number), pos_type (string), get_fingerprint 
 			(boolean)</td>
+		</tr>
+		<tr>
+			<td>getFingerprintForText</td>
+			<td>Returns a Retina representation (a Fingerprint) of the input text.</td>
+			<td>text (string)</td>
+			<td>none</td>
 		</tr>
 		<tr>
 			<td></td>
