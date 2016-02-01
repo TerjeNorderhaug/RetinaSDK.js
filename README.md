@@ -35,7 +35,7 @@ with a valid API Key.
 
 RetinaSDK.js offers two abstractions of the Cortical.io Retina API, a lightweight module that offers simplified 
 access to the most common and useful API functions available and a full version module that gives the user complete 
-control over various parameter settings and full access to all API endpoints.
+control over various parameter settings and complete access to all API endpoints.
  
 ### Lite Client
 
@@ -82,12 +82,12 @@ lite.compare(appleFP, "microsoft")
 /* Construct a composite Fingerprint from an array of texts to use for semantic filtering */
 lite.createCategoryFilter(["neuron", "synapse", "retina", "neocortex"])
 > Array[677]
-
 ```
 
 #### Callbacks
 
-Since each call to the LiteClient results in an HTTP request being made to the Cortical.io API, it is highly 
+The above examples show basic use of the lite client without using callback functions to process the responses. 
+But since each call to the LiteClient results in an HTTP request being made to the Cortical.io API, it is highly 
 recommended to pass a callback function as part of each method call to handle the resulting response. While the 
 callback parameter is technically optional, if it is missing, the HTTP requests made will block code execution until 
 a response is received, which can result in poor application performance.
@@ -95,6 +95,19 @@ a response is received, which can result in poor application performance.
 Callbacks can either be a single function or an object with two named functions, success and error, which will 
 process normal responses or deal with failed requests. If only a single function is passed, it will be assumed to be 
 the success function and failed requests will result in an exception.
+
+/* Asynchronously retrieve similar terms with a callback */
+lite.getSimilarTerms("javascript", function(similarTerms) {
+    console.log(similarTerms)
+});
+
+/* Asynchronously retrieve similar terms with a callback */
+lite.getSimilarTerms("javascript", {success: function(similarTerms) {
+ console.log(similarTerms)
+}, error: function(response){
+ // handle error
+}});
+
 
 #### Available Functions and Parameters
 
