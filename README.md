@@ -56,8 +56,32 @@ Once you've created a client instance, you can start using it to make calls to t
 lite.getSimilarTerms("javascript");
 > ["javascript", "browser", "html", "browsers", "api", "xml", "functionality", "microsoft", "runtime", "perl", "implementations", "css", "software", "unix", "files", "gui", "server", "plugin", "internet explorer", "linux"]
 
+/* Return keywords of a text */
 lite.getKeywords("Vienna is the capital and largest city of Austria, and one of the nine states of Austria");
 > ["austria", "vienna"]
+
+/* Compute a semantic fingerprint for an input text */
+lite.getFingerprint("apple")
+> Array[328]
+
+/* Compute the similarity between two texts */
+lite.compare("apple", "microsoft")
+> 0.4024390243902438
+
+/* Compute the similarity between two fingerprints */
+var appleFP = lite.getFingerprint("apple")
+var microsoftFP = lite.getFingerprint("microsoft")
+lite.compare(appleFP, microsoftFP)
+> 0.4024390243902438
+
+/* Compute the similarity between a fingerprint and a text */
+var appleFP = lite.getFingerprint("apple")
+lite.compare(appleFP, "microsoft")
+> 0.4024390243902438
+
+/* Construct a composite Fingerprint from an array of texts to use for semantic filtering */
+lite.createCategoryFilter(["neuron", "synapse", "retina", "neocortex"])
+> Array[677]
 
 ```
 
