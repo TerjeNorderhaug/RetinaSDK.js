@@ -158,12 +158,18 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
     		<td>getRetinas</td>
     		<td>Returns information about Retinas as an array of Retina objects.</td>
     		<td>none</td>
-    		<td>retina_name</td>
+    		<td>retina_name (string)</td>
     	</tr>
+    	<tr>
+			<td>getTerms</td>
+			<td>Returns information about terms as an array of term objects.</td>
+			<td>none</td>
+			<td>term (string), start_index (number), max_results (number), get_fingerprint (boolean)</td>
+		</tr>
 	</tbody>
 </table>
 
-### Change Log
+### Changelog
 
 <B>v 1.0.0</B>
 
