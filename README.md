@@ -37,15 +37,15 @@ RetinaSDK.js offers two abstractions of the Cortical.io Retina API, a lightweigh
 access to the most common and useful API functions available and a full version module that gives the user complete 
 control over various parameter settings and complete access to all API endpoints.
  
-### Lite Client
+### LiteClient Module
 
-The Lite client module is sufficient for most applications and offers the ability to quickly and easily 
+The LiteClient module is sufficient for most applications and offers the ability to quickly and easily 
 compute keywords for a text, semantically compare two texts, retrieve similar terms, create category filters for 
 semantic filtering and generate semantic fingerprints of a given text. To get started, create an instance of the 
 lightweight client by passing your API key as follows:  
 
 ```javascript
-/* Create lightweight client instance */
+/* Create "lightweight" LiteClient instance */
 var lite = retinaSDK.LiteClient(your_api_key)
 ```
 
@@ -93,7 +93,7 @@ lite.compare(neurologyFilter, "cortical column")
 
 #### Callbacks
 
-The above examples show basic use of the lite client without callback functions to process the responses. But since 
+The above examples show basic use of the LiteClient without callback functions to process the responses. But since 
 each call to the LiteClient results in an HTTP request being made to the Cortical.io API, it is highly recommended 
 to pass a callback function as part of each method call to handle the resulting response. While the callback 
 parameter is technically optional, if it is missing, the HTTP requests made will block code execution until 
@@ -117,14 +117,24 @@ lite.getSimilarTerms("javascript", {success: function(similarTerms) {
 }});
 ```
 
-### Full Client
+### FullClient Module
 
-TODO instantiate full client
+As with the LiteClient, the FullClient must be instantiated with a valid Cortical.io API key:
 
 ```javascript
-/* Create full client instance */
+/* Create FullClient instance */
 var full = retinaSDK.FullClient(your_api_key)
 ```
+
+Additional parameters can also be passed when creating a FullClient instance to specify the host address (in case you
+ have access to your own Retina API service, for example by running your own [AWS](https://aws.amazon
+ .com/marketplace/seller-profile?id=c88ca878-a648-464c-b29b-38ba057bd2f5) or [Azure instance](https://azure.microsoft
+ .com/en-us/marketplace/partners/cortical-io/cortical-io-retinaservice-eng-gen/)) and Retina name.
+ 
+ ```javascript
+ /* Create FullClient instance */
+ var full = retinaSDK.FullClient(your_api_key, "http://api.cortical.io/rest/", "en_associative")
+ ```
 
 #### Callbacks
 
