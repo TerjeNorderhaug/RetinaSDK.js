@@ -160,7 +160,7 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
     		<td>none</td>
     		<td>retina_name</td>
     	</tr>
-	</tbody<
+	</tbody>
 </table>
 
 ### Change Log
