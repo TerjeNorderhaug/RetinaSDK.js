@@ -39,9 +39,9 @@ control over various parameter settings and full access to all API endpoints.
  
 ### Lite Client
 
-The Lite client module is sufficient for the majority of applications and offers the ability to quickly and easily 
+The Lite client module is sufficient for most applications and offers the ability to quickly and easily 
 compute keywords for a text, semantically compare two texts, retrieve similar terms, create category filters for 
-semantic filtering and generate semantic fingerprints for a text. To get started, create an instance of the 
+semantic filtering and generate semantic fingerprints of a given text. To get started, create an instance of the 
 lightweight client by passing your API key as follows:  
 
 ```javascript
@@ -49,10 +49,14 @@ lightweight client by passing your API key as follows:
 var lite = retinaSDK.LiteClient(your_api_key)
 ```
 
+Once you've created a client instance, you can start using it to make calls to the Retina API:
+
 ```javascript
 /* Retrieve similar terms */
-lite.getSimilarTerms("javascript");
-["javascript", "browser", "html", "browsers", "api", "xml", "functionality", "microsoft", "runtime", "perl", "implementations", "css", "software", "unix", "files", "gui", "server", "plugin", "internet explorer", "linux"]
+var similarTerms = lite.getSimilarTerms("javascript");
+console.log(similarTerms)
+// Output: ["javascript", "browser", "html", "browsers", "api", "xml", "functionality", "microsoft", "runtime", 
+"perl", "implementations", "css", "software", "unix", "files", "gui", "server", "plugin", "internet explorer", "linux"]
 ```
 
 #### Callbacks
