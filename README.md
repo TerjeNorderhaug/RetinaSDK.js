@@ -127,12 +127,10 @@ var full = retinaSDK.FullClient(your_api_key)
 ```
 
 Additional parameters can also be passed when creating a FullClient instance to specify the host address (in case you
- have access to your own Retina API service, for example by running your own [AWS](https://aws.amazon
- .com/marketplace/seller-profile?id=c88ca878-a648-464c-b29b-38ba057bd2f5) or [Azure instance](https://azure.microsoft
- .com/en-us/marketplace/partners/cortical-io/cortical-io-retinaservice-eng-gen/)) and Retina name.
+ have access to your own Retina API service, for example by running your own [AWS](https://aws.amazon.com/marketplace/seller-profile?id=c88ca878-a648-464c-b29b-38ba057bd2f5) or [Azure instance](https://azure.microsoft.com/en-us/marketplace/partners/cortical-io/cortical-io-retinaservice-eng-gen/)) and Retina name.
  
  ```javascript
- /* Create FullClient instance */
+ /* Create FullClient instance with explicit server address and Retina name */
  var full = retinaSDK.FullClient(your_api_key, "http://api.cortical.io/rest/", "en_associative")
  ```
 
@@ -145,3 +143,28 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 
 
 #### Available Functions and Parameters
+
+<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<th style="">Method</th>
+			<th style="">Description</th>
+			<th style="">Required Parameters</th>
+			<th style="">Optional Parameters</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+    		<td>getRetinas</td>
+    		<td>Returns information about Retinas as an array of Retina objects.</td>
+    		<td>none</td>
+    		<td>retina_name</td>
+    	</tr>
+	</tbody<
+</table>
+
+### Change Log
+
+<B>v 1.0.0</B>
+
+* Initial release.
