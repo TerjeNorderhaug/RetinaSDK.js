@@ -166,6 +166,25 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 			<td>none</td>
 			<td>term (string), start_index (number), max_results (number), get_fingerprint (boolean)</td>
 		</tr>
+		<tr>
+			<td>getContextsForTerm</td>
+			<td>Returns an array of all the contexts for a given term.</td>
+			<td>term (string)</td>
+			<td>start_index (number), max_results (number), get_fingerprint (boolean)</td>
+		</tr>
+		<tr>
+			<td>Returns an array of similar terms for the specified input term.</td>
+			<td>getSimilarTermsForTerm</td>
+			<td>term (string)</td>
+			<td>context_id (number), start_index (number), max_results (number), pos_type (string), get_fingerprint 
+			(boolean)</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
 	</tbody>
 </table>
 
