@@ -129,9 +129,9 @@ var full = retinaSDK.FullClient(your_api_key)
 Additional parameters can also be passed when creating a FullClient instance to specify the host address (in case you
  have access to your own Retina API service, for example by running your own [AWS](https://aws.amazon.com/marketplace/seller-profile?id=c88ca878-a648-464c-b29b-38ba057bd2f5) or [Azure instance](https://azure.microsoft.com/en-us/marketplace/partners/cortical-io/cortical-io-retinaservice-eng-gen/)) and Retina name.
  
- ```javascript
- /* Create FullClient instance with explicit server address and Retina name */
- var full = retinaSDK.FullClient(your_api_key, "http://api.cortical.io/rest/", "en_associative")
+```javascript
+/* Create FullClient instance with explicit server address and Retina name */
+var full = retinaSDK.FullClient(your_api_key, "http://api.cortical.io/rest/", "en_associative")
  ```
 
 #### Callbacks
@@ -151,7 +151,6 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 			<th style="">Description</th>
 			<th style="">Required Parameters</th>
 			<th style="">Optional Parameters</th>
-			<th style="">Example</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -187,6 +186,19 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 			<td>none</td>
 		</tr>
 		<tr>
+			<td>getKeywordsForText</td>
+			<td>Returns an array of keywords from the input text.</td>
+			<td>text (string)</td>
+			<td>none</td>
+		</tr>
+		<tr>
+			<td>getTokensForText</td>
+			<td>Returns an array of sentences (each of which is a comma-separated list of tokens) from an input 
+			text</td>
+			<td>'body' object containing an input text</td>
+			<td>pos_tags (string)</td>
+		</tr>
+		<tr>
 			<td></td>
 			<td></td>
 			<td></td>
@@ -194,6 +206,8 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 		</tr>
 	</tbody>
 </table>
+
+
 
 #### FullClient Examples
 
