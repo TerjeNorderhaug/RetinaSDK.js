@@ -141,7 +141,6 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
  failed requests. If only a single function is passed, it will be assumed to be the success function and failed 
  requests will result in an exception.
 
-
 #### Available Functions and Parameters
 
 <table class="table table-bordered table-striped">
@@ -207,8 +206,6 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 	</tbody>
 </table>
 
-
-
 #### FullClient Examples
 
 ```javascript
@@ -228,10 +225,8 @@ full.getContextsForTerm({term: "javascript", max_results: 20}, callback)
 full.getSimilarTermsForTerm({term: "javascript", get_fingerprint: true}, callback)
 
 /* Encode a text into a Semantic Fingerprint */
-full.getFingerprintForText("JavaScript is a dynamically typed object-oriented programming language", callback)
-
+full.getFingerprintForText({text: "JavaScript is a dynamically typed object-oriented programming language"}, callback)
 ```
-
 
 ### Changelog
 
