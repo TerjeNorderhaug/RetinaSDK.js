@@ -194,8 +194,26 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 			<td>getTokensForText</td>
 			<td>Returns an array of sentences (each of which is a comma-separated list of tokens) from an input 
 			text</td>
-			<td>'body' object containing an input text</td>
+			<td>text (string)</td>
 			<td>pos_tags (string)</td>
+		</tr>
+		<tr>
+			<td>getSlicesForText</td>
+			<td>Returns an array of text objects corresponding to the input text, divided according to topic changes.</td>
+			<td>text (string)</td>
+			<td>pos_tags (string)</td>
+		</tr>
+		<tr>
+			<td>getFingerprintsForTexts</td>
+			<td>Returns an array of Retina representations (Fingerprints) of each input text.</td>
+			<td>An array of texts</td>
+			<td>sparsity (number)</td>
+		</tr>
+		<tr>
+			<td>getLanguageForText</td>
+			<td>Returns an object containing information about the language of the specified text.</td>
+			<td>text (string)</td>
+			<td>none</td>
 		</tr>
 		<tr>
 			<td></td>
@@ -219,13 +237,27 @@ full.getRetinas(callback)
 full.getTerms({term: "javascript"}, callback)
 
 /* Get contexts for a given term */
-full.getContextsForTerm({term: "javascript", max_results: 20}, callback)
+full.getContextsForTerm({term: "javascript", max_results: 3}, callback)
 
 /* Get similar terms and their Fingerprints for a given term */
 full.getSimilarTermsForTerm({term: "javascript", get_fingerprint: true}, callback)
 
 /* Encode a text into a Semantic Fingerprint */
 full.getFingerprintForText({text: "JavaScript is a dynamically typed object-oriented programming language"}, callback)
+
+/* Return keywords from a text */
+getKeywordsForText
+
+/* Returns tokens from an input text */
+getTokensForText
+
+getSlicesForText
+
+getFingerprintsForTexts
+
+getLanguageForText
+
+
 ```
 
 ### Changelog
