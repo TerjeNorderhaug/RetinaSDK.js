@@ -151,6 +151,7 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 			<th style="">Description</th>
 			<th style="">Required Parameters</th>
 			<th style="">Optional Parameters</th>
+			<th style="">Example</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -159,18 +160,21 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
     		<td>Returns information about Retinas as an array of Retina objects.</td>
     		<td>none</td>
     		<td>retina_name (string)</td>
+    		<td>full.getRetinas(callback)</td>
     	</tr>
     	<tr>
 			<td>getTerms</td>
 			<td>Returns information about terms as an array of term objects.</td>
 			<td>none</td>
 			<td>term (string), start_index (number), max_results (number), get_fingerprint (boolean)</td>
+			<td>full.getTerms({term: "javascript"}, callback)</td>
 		</tr>
 		<tr>
 			<td>getContextsForTerm</td>
 			<td>Returns an array of all the contexts for a given term.</td>
 			<td>term (string)</td>
 			<td>start_index (number), max_results (number), get_fingerprint (boolean)</td>
+			<td>full.getContextsForTerm({term: "javascript", max_results: 20}, callback)</td>
 		</tr>
 		<tr>
 			<td>getSimilarTermsForTerm</td>
@@ -178,14 +182,18 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 			<td>term (string)</td>
 			<td>context_id (number), start_index (number), max_results (number), pos_type (string), get_fingerprint 
 			(boolean)</td>
+			<td>full.getSimilarTermsForTerm({term: "javascript", get_fingerprint: true}, callback)</td>
 		</tr>
 		<tr>
 			<td>getFingerprintForText</td>
 			<td>Returns a Retina representation (a Fingerprint) of the input text.</td>
 			<td>text (string)</td>
 			<td>none</td>
+			<td>full.getFingerprintForText("JavaScript is a dynamically typed object-oriented programming language", 
+			callback)</td>
 		</tr>
 		<tr>
+			<td></td>
 			<td></td>
 			<td></td>
 			<td></td>
