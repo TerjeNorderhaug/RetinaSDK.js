@@ -160,21 +160,18 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
     		<td>Returns information about Retinas as an array of Retina objects.</td>
     		<td>none</td>
     		<td>retina_name (string)</td>
-    		<td>full.getRetinas(callback)</td>
     	</tr>
     	<tr>
 			<td>getTerms</td>
 			<td>Returns information about terms as an array of term objects.</td>
 			<td>none</td>
 			<td>term (string), start_index (number), max_results (number), get_fingerprint (boolean)</td>
-			<td>full.getTerms({term: "javascript"}, callback)</td>
 		</tr>
 		<tr>
 			<td>getContextsForTerm</td>
 			<td>Returns an array of all the contexts for a given term.</td>
 			<td>term (string)</td>
 			<td>start_index (number), max_results (number), get_fingerprint (boolean)</td>
-			<td>full.getContextsForTerm({term: "javascript", max_results: 20}, callback)</td>
 		</tr>
 		<tr>
 			<td>getSimilarTermsForTerm</td>
@@ -182,18 +179,14 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 			<td>term (string)</td>
 			<td>context_id (number), start_index (number), max_results (number), pos_type (string), get_fingerprint 
 			(boolean)</td>
-			<td>full.getSimilarTermsForTerm({term: "javascript", get_fingerprint: true}, callback)</td>
 		</tr>
 		<tr>
 			<td>getFingerprintForText</td>
 			<td>Returns a Retina representation (a Fingerprint) of the input text.</td>
 			<td>text (string)</td>
 			<td>none</td>
-			<td>full.getFingerprintForText("JavaScript is a dynamically typed object-oriented programming language", 
-			callback)</td>
 		</tr>
 		<tr>
-			<td></td>
 			<td></td>
 			<td></td>
 			<td></td>
@@ -201,6 +194,30 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 		</tr>
 	</tbody>
 </table>
+
+#### FullClient Examples
+
+```javascript
+/* Create FullClient instance */
+var full = retinaSDK.FullClient(your_api_key)
+
+/* Retrieve an array of all available Retinas */
+full.getRetinas(callback)
+
+/* Retrieve information about a specific term */
+full.getTerms({term: "javascript"}, callback)
+
+/* Get contexts for a given term */
+full.getContextsForTerm({term: "javascript", max_results: 20}, callback)
+
+/* Get similar terms and their Fingerprints for a given term */
+full.getSimilarTermsForTerm({term: "javascript", get_fingerprint: true}, callback)
+
+/* Encode a text into a Semantic Fingerprint */
+full.getFingerprintForText("JavaScript is a dynamically typed object-oriented programming language", callback)
+
+```
+
 
 ### Changelog
 
