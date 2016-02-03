@@ -40,7 +40,7 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
 
         // Create request
         var httpRequest = new XMLHttpRequest();
-        var isAsync = (typeof callbacks != "undefined" && typeof callbacks.success == 'function');
+        var isAsync = (typeof callbacks != 'undefined' && typeof callbacks.success == 'function');
         httpRequest.open(type, url, isAsync);
 
         // Set request header depending on endpoint being called
@@ -123,18 +123,15 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
         // Append params to URL
         var first = true;
         for (var key in params) {
-
-            if (key == "body") {
+            if (key == 'body') {
                 continue;
             }
-
             if (first) {
                 url = url + "?";
                 first = false;
             } else {
                 url = url + "&";
             }
-
             if (params.hasOwnProperty(key)) {
                 var name = key;
                 var value = params[key];
@@ -191,7 +188,7 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     function wrapCallback(callback, wrapper) {
-        if (typeof callback != "undefined") {
+        if (typeof callback != 'undefined') {
             var originalCallback = callback;
             callback = function (data) {
                 var response = wrapper(data);
@@ -220,7 +217,7 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      *
      * Required parameters: none
      *
-     * Optional parameters: retina_name
+     * Optional parameters: retina_name (string)
      *
      * If no value is specified for the retina_name parameter, this method returns an overview of all available
      * Retinas.
@@ -236,10 +233,14 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      */
     api.getRetinas = function (params, callbacks) {
         if (typeof params == 'function') {
-            callbacks =  wrapAsSuccessCallback(params);
+            callbacks = wrapAsSuccessCallback(params);
+            params = undefined;
+        } else if (params && typeof params.success == 'function') {
+            callbacks = params;
+            params = undefined;
         }
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
         return get("retinas", params, callbacks);
     };
@@ -277,12 +278,16 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      */
     api.getTerms = function (params, callbacks) {
         if (typeof params == 'function') {
-            callbacks =  wrapAsSuccessCallback(params);
+            callbacks = wrapAsSuccessCallback(params);
+            params = undefined;
+        } else if (params && typeof params.success == 'function') {
+            callbacks = params;
+            params = undefined;
         } else if (typeof params == 'string') {
             params = {term: params}
         }
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
         return get("terms", params, callbacks);
     };
@@ -313,7 +318,7 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
             params = {term: params}
         }
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
         checkForRequiredParameters(params, ["term"]);
         return get("terms/contexts", params, callbacks);
@@ -352,7 +357,7 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
             params = {term: params}
         }
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
         checkForRequiredParameters(params, ["term"]);
         return get("terms/similar_terms", params, callbacks);
@@ -374,9 +379,12 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
     api.getFingerprintForText = function (params, callbacks) {
         if (typeof params == 'string') {
             params = {body: params}
+        } else if (typeof params.text != 'undefined') {
+            params.body = params.text;
+            delete params.text;
         }
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
         if (callbacks && typeof callbacks.success == 'function') {
             callbacks.success = wrapCallback(callbacks.success, extractPositionsFromFingerprintArray);
@@ -400,9 +408,12 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
     api.getKeywordsForText = function (params, callbacks) {
         if (typeof params == 'string') {
             params = {body: params}
+        } else if (typeof params.text != 'undefined') {
+            params.body = params.text;
+            delete params.text;
         }
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
         return post("text/keywords", params, callbacks);
     };
@@ -411,7 +422,7 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      * Given an input text, this method returns an array of sentences (each of which is a comma-separated list of
      * tokens).
      *
-     * Required parameters: a body object containing an input text (string) to retrieve tokens for.
+     * Required parameters: an object with a body field containing an input text (string) to retrieve tokens for.
      *
      * Optional parameters: pos_tags (string)
      *
@@ -434,16 +445,16 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
             delete params['pos_tags'];
         }
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        checkForRequiredParameters(params, ["body"]);
+        checkForRequiredParameters(params, ['body']);
         return post("text/tokenize", params, callbacks);
     };
 
     /**
-     * Returns an array of text objects corresponding to the input text but divided by topic changes.
+     * Returns an array of text objects corresponding to the input text, divided according to topic changes.
      *
-     * Required parameters: a body object containing an input text (string) to slice.
+     * Required parameters: an object with a body field containing an input text (string) to slice.
      *
      * Optional parameters: start_index (number), max_results (number), get_fingerprint (boolean)
      *
@@ -469,16 +480,16 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
             params = {body: params}
         }
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        checkForRequiredParameters(params, ["body"]);
+        checkForRequiredParameters(params, ['body']);
         return post("text/slices", params, callbacks);
     };
 
     /**
      * Returns an array of Retina representations (Fingerprints) of each input text.
      *
-     * Required parameters: a body object containing an array of texts to encode.
+     * Required parameters: an object with a body field containing an array of texts to encode.
      *
      * Optional parameters: sparsity (number)
      *
@@ -499,9 +510,9 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
             params = {body: params};
         }
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        checkForRequiredParameters(params, ["body"]);
+        checkForRequiredParameters(params, ['body']);
         return post("text/bulk", params, callbacks);
     };
 
@@ -524,18 +535,21 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
     api.getLanguageForText = function (params, callbacks) {
         if (typeof params == 'string') {
             params = {body: params};
+        } else if (typeof params.text != 'undefined') {
+            params.body = params.text;
+            delete params.text;
         }
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        checkForRequiredParameters(params, ["body"]);
+        checkForRequiredParameters(params, ['body']);
         return post("text/detect_language", params, callbacks);
     };
 
     /**
      * Returns a Retina representation (a Fingerprint) of the input expression.
      *
-     * Required parameters: a body object containing a JSON object encapsulating a Semantic Expression.
+     * Required parameters: expression (JSON object encapsulating a Semantic Expression).
      *
      * Optional parameters: sparsity (number)
      *
@@ -557,19 +571,25 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      */
     api.getFingerprintForExpression = function (params, callbacks) {
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
         if (callbacks && typeof callbacks.success == 'function') {
             callbacks.success = wrapCallback(callbacks.success, extractPositionsFromFingerprint);
         }
-        checkForRequiredParameters(params, ["body"]);
+        if (typeof params == 'string') {
+            params = {body: {text: params}}
+        } else {
+            checkForRequiredParameters(params, ['expression']);
+            params['body'] = params['expression'];
+            delete params['expression'];
+        }
         return extractPositionsFromFingerprint(post("expressions", params, callbacks));
     };
 
     /**
      * Returns an array of contexts for the input expression.
      *
-     * Required parameters: a body object containing a JSON object encapsulating a Semantic Expression.
+     * Required parameters: expression (JSON object encapsulating a Semantic Expression).
      *
      * Optional parameters: start_index (number), max_results (number), get_fingerprint (boolean), sparsity (number)
      *
@@ -599,16 +619,22 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      */
     api.getContextsForExpression = function (params, callbacks) {
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        checkForRequiredParameters(params, ["body"]);
-        return post("expressions/contexts", params, callbacks);
+        if (typeof params == 'string') {
+            params = {body: {text: params}}
+        } else {
+            checkForRequiredParameters(params, ['expression']);
+            params['body'] = params['expression'];
+            delete params['expression'];
+        }
+        return post('expressions/contexts', params, callbacks);
     };
 
     /**
      * Returns an array of similar terms for the input expression.
      *
-     * Required parameters: a body object containing a JSON object encapsulating a Semantic Expression.
+     * Required parameters: expression (JSON object encapsulating a Semantic Expression).
      *
      * Optional parameters: context_id (number), start_index (number), max_results (number), pos_type (string),
      * sparsity (number), get_fingerprint (boolean)
@@ -645,16 +671,22 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      */
     api.getSimilarTermsForExpression = function (params, callbacks) {
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        checkForRequiredParameters(params, ["body"]);
-        return post("expressions/similar_terms", params, callbacks);
+        if (typeof params == 'string') {
+            params = {body: {text: params}}
+        } else {
+            checkForRequiredParameters(params, ['expression']);
+            params['body'] = params['expression'];
+            delete params['expression'];
+        }
+        return post('expressions/similar_terms', params, callbacks);
     };
 
     /**
      * Returns an array of Retina representations (Fingerprints) for an array of input expressions.
      *
-     * Required parameters: a body object containing an array of JSON objects encapsulating Semantic Expressions.
+     * Required parameters: expressions (array of JSON objects encapsulating Semantic Expressions).
      *
      * Optional parameters: sparsity (number)
      *
@@ -676,16 +708,18 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      */
     api.getFingerprintsForExpressions = function (params, callbacks) {
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        checkForRequiredParameters(params, ["body"]);
-        return post("expressions/bulk", params, callbacks);
+        checkForRequiredParameters(params, ['expressions']);
+        params['body'] = params['expressions'];
+        delete params['expressions'];
+        return post('expressions/bulk', params, callbacks);
     };
 
     /**
      * Returns an array of context arrays for the input expressions.
      *
-     * Required parameters: a body object containing an array of JSON objects encapsulating Semantic Expressions.
+     * Required parameters: expressions (array of JSON objects encapsulating Semantic Expressions).
      *
      * Optional parameters: start_index (number), max_results (number), sparsity (number), get_fingerprint (boolean)
      *
@@ -715,17 +749,19 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      */
     api.getContextsForExpressions = function (params, callbacks) {
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        checkForRequiredParameters(params, ["body"]);
-        return post("expressions/contexts/bulk", params, callbacks);
+        checkForRequiredParameters(params, ['expressions']);
+        params['body'] = params['expressions'];
+        delete params['expressions'];
+        return post('expressions/contexts/bulk', params, callbacks);
     };
 
     /**
      * Returns an array of Term object arrays containing similar terms corresponding to the input array of
      * expressions.
      *
-     * Required parameters: a body object containing an array of JSON objects encapsulating Semantic Expressions.
+     * Required parameters: expressions (array of JSON objects encapsulating Semantic Expressions).
      *
      * Optional parameters: context_id (number), start_index (number), max_results (number), pos_type
      * (string), sparsity (number), get_fingerprint (boolean)
@@ -762,16 +798,18 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      */
     api.getSimilarTermsForExpressions = function (params, callbacks) {
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        checkForRequiredParameters(params, ["body"]);
-        return post("expressions/similar_terms/bulk", params, callbacks);
+        checkForRequiredParameters(params, ['expressions']);
+        params['body'] = params['expressions'];
+        delete params['expressions'];
+        return post('expressions/similar_terms/bulk', params, callbacks);
     };
 
     /**
      * Returns an object containing distance and similarity measures of the two input expression.
      *
-     * Required parameters: a body object containing an array of two JSON objects encapsulating Semantic Expressions.
+     * Required parameters: comparison (array of JSON object pair encapsulating Semantic Expressions to compare).
      *
      * Optional parameters: none
      *
@@ -791,17 +829,19 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      */
     api.compare = function (params, callbacks) {
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        checkForRequiredParameters(params, ["body"]);
-        return post("compare", params, callbacks);
+        checkForRequiredParameters(params, ['comparison']);
+        params = {body: params['comparison']};
+        delete params['comparison'];
+        return post('compare', params, callbacks);
     };
 
     /**
      * Returns an array of objects containing distance and similarity measures of the input array of expressions to
      * compare.
      *
-     * Required parameters: a body object containing an array of JSON object pairs encapsulating Semantic Expressions.
+     * Required parameters: comparisons (array of JSON object pairs encapsulating Semantic Expressions to compare).
      *
      * Optional parameters: none
      *
@@ -821,16 +861,18 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      */
     api.compareBulk = function (params, callbacks) {
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        checkForRequiredParameters(params, ["body"]);
-        return post("compare/bulk", params, callbacks);
+        checkForRequiredParameters(params, ['comparisons']);
+        params = {body: params['comparisons']};
+        delete params['comparisons'];
+        return post('compare/bulk', params, callbacks);
     };
 
     /**
      * Returns a visualization as an encoded string of the input expression.
      *
-     * Required parameters: a body object containing a JSON object encapsulating a Semantic Expression.
+     * Required parameters: expression (JSON object encapsulating a Semantic Expression).
      *
      * Optional parameters: image_scalar (number), plot_shape (string), image_encoding (string), sparsity (number)
      *
@@ -860,22 +902,25 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
     api.getImage = function (params, callbacks) {
         if (typeof params == 'string') {
             params = {body: {text: params}}
+        } else {
+            checkForRequiredParameters(params, ['expression']);
+            params['body'] = params['expression'];
+            delete params['expression'];
         }
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        params['image_scalar'] = params['image_scalar'] || "2";
-        params['plot_shape'] = params['plot_shape'] || "circle";
-        params['image_encoding'] = params['image_encoding'] || "base64/png";
-        params['sparsity'] = params['sparsity'] || "1.0";
-        checkForRequiredParameters(params, ["body"]);
-        return post("image", params, callbacks);
+        params['image_scalar'] = params['image_scalar'] || '2';
+        params['plot_shape'] = params['plot_shape'] || 'circle';
+        params['image_encoding'] = params['image_encoding'] || 'base64/png';
+        params['sparsity'] = params['sparsity'] || '1.0';
+        return post('image', params, callbacks);
     };
 
     /**
      * Returns an array of visualizations as encoded string of the input expressions.
      *
-     * Required parameters: a body object containing an array of JSON objects encapsulating Semantic Expressions.
+     * Required parameters: expressions (array of JSON objects encapsulating Semantic Expressions).
      *
      * Optional parameters: image_scalar (number), plot_shape (string), image_encoding (string), sparsity (number),
      * get_fingerprint (boolean)
@@ -907,20 +952,22 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      */
     api.getImages = function (params, callbacks) {
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        params['image_scalar'] = params['image_scalar'] || "2";
-        params['plot_shape'] = params['plot_shape'] || "circle";
-        params['sparsity'] = params['sparsity'] || "1.0";
-        params['get_fingerprint'] = params['get_fingerprint'] || "false";
-        checkForRequiredParameters(params, ["body"]);
-        return post("image/bulk", params, callbacks);
+        checkForRequiredParameters(params, ['expressions']);
+        params['body'] = params['expressions'];
+        delete params['expressions'];
+        params['image_scalar'] = params['image_scalar'] || '2';
+        params['plot_shape'] = params['plot_shape'] || 'circle';
+        params['sparsity'] = params['sparsity'] || '1.0';
+        params['get_fingerprint'] = params['get_fingerprint'] || 'false';
+        return post('image/bulk', params, callbacks);
     };
 
     /**
-     * Returns an overlay image for the two input elements specified by JSON array containing two expressions.
+     * Returns an overlay image for the two input elements specified by a JSON array containing two expressions.
      *
-     * Required parameters: a body object containing an array of two JSON objects encapsulating Semantic Expressions.
+     * Required parameters: expressions (array of two JSON objects encapsulating two Semantic Expressions)
      *
      * Optional parameters: image_scalar (number), plot_shape (string), image_encoding (string)
      *
@@ -945,25 +992,26 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      */
     api.compareImage = function (params, callbacks) {
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        params['image_scalar'] = params['image_scalar'] || "2";
-        params['plot_shape'] = params['plot_shape'] || "circle";
-        params['image_encoding'] = params['image_encoding'] || "base64/png";
-        checkForRequiredParameters(params, ["body"]);
-        return post("image/compare", params, callbacks);
+        checkForRequiredParameters(params, ['expressions']);
+        params['body'] = params['expressions'];
+        delete params['expressions'];
+        params['image_scalar'] = params['image_scalar'] || '2';
+        params['plot_shape'] = params['plot_shape'] || 'circle';
+        params['image_encoding'] = params['image_encoding'] || 'base64/png';
+        return post('image/compare', params, callbacks);
     };
 
     /**
      * Returns a Semantic Fingerprint used to filter texts by intelligently piecing together positive and negative
      * examples of texts that should be positively and negatively classified by the filter.
      *
-     * Required parameters: filter_name (string) and a body object containing the field "positiveExamples" with an
-     * array of Semantic Expression objects representing positive examples for the filter and an optional
-     * "negativeExamples" field with an array of Semantic Expression objects representing positive examples for the
-     * filter.
+     * Required parameters: filter_name (string) and an array of JSON expression objects "positive_examples"
+     * representing positive examples for the filter.
      *
-     * Optional parameters: none
+     * Optional parameters: an array of JSON expression objects "negative_examples" representing negative examples
+     * for the filter.
      *
      * Expressions are built in JSON syntax by combining Retina objects together with the optional operators "and", "or"
      * and "sub". An expression can contain Terms ({"term": "term"}), Fingerprints ({"positions": [1,2,...]}), Texts
@@ -979,11 +1027,19 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      */
     api.createCategoryFilter = function (params, callbacks) {
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        checkForRequiredParameters(params, ["filter_name", "body"]);
-        checkForRequiredParameters(params['body'], ["positiveExamples"]);
-        return post("classify/create_category_filter", params, callbacks);
+        checkForRequiredParameters(params, ['filter_name']);
+        checkForRequiredParameters(params, ['positive_examples']);
+        // Reconstruct params object
+        params.body = {};
+        params.body['positiveExamples'] = params['positive_examples'];
+        delete params['positive_examples'];
+        if (typeof params['negative_examples'] != 'undefined') {
+            params.body['negativeExamples'] = params['negative_examples'];
+            delete params['negative_examples'];
+        }
+        return post('classify/create_category_filter', params, callbacks);
     };
 
     return api;
@@ -1013,15 +1069,15 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
         } else if (Array.isArray(input) && input.length > 0 && typeof input[0] == 'number') {
             input = {positions: input};
         } else {
-            throw new Error("Invalid input for getSimilarTerms call: " + input);
+            throw new Error('Invalid input for getSimilarTerms call: ' + input);
         }
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        if (callbacks && typeof callbacks.success == "function") {
+        if (callbacks && typeof callbacks.success == 'function') {
             callbacks.success = wrapCallback(callbacks.success, extractSimilarTerms);
         }
-        var response = full.getSimilarTermsForExpression({body: input, max_results: 20}, callbacks);
+        var response = full.getSimilarTermsForExpression({expression: input, max_results: 20}, callbacks);
         return extractSimilarTerms(response);
     };
 
@@ -1034,7 +1090,7 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
      */
     lite.getKeywords = function (text, callbacks) {
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
         return full.getKeywordsForText(text, callbacks);
     };
@@ -1048,7 +1104,7 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
      */
     lite.getFingerprint = function (text, callbacks) {
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
         return full.getFingerprintForText(text, callbacks);
     };
@@ -1064,21 +1120,21 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
     lite.compare = function (object1, object2, callbacks) {
 
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        if (callbacks && typeof callbacks.success == "function") {
+        if (callbacks && typeof callbacks.success == 'function') {
             callbacks.success = wrapCallback(callbacks.success, extractCosineSimilarity);
         }
         var response;
 
-        if (typeof object1 == "string" && typeof object2 == "string") {
-            response = full.compare({body: [{text: object1}, {text: object2}]}, callbacks);
+        if (typeof object1 == 'string' && typeof object2 == 'string') {
+            response = full.compare({comparison: [{text: object1}, {text: object2}]}, callbacks);
         } else if (Array.isArray(object1) && Array.isArray(object2)) {
-            response = full.compare({body: [{positions: object1}, {positions: object2}]}, callbacks);
-        } else if (typeof object1 == "string" && Array.isArray(object2)) {
-            response = full.compare({body: [{text: object1}, {positions: object2}]}, callbacks);
-        } else if (Array.isArray(object1) && typeof object2 == "string") {
-            response = full.compare({body: [{positions: object1}, {text: object2}]}, callbacks);
+            response = full.compare({comparison: [{positions: object1}, {positions: object2}]}, callbacks);
+        } else if (typeof object1 == 'string' && Array.isArray(object2)) {
+            response = full.compare({comparison: [{text: object1}, {positions: object2}]}, callbacks);
+        } else if (Array.isArray(object1) && typeof object2 == 'string') {
+            response = full.compare({comparison: [{positions: object1}, {text: object2}]}, callbacks);
         } else {
             throw new Error("Unable to compute cosine similarity between '" + object1 + "' and '" + object2 + "'");
         }
@@ -1089,30 +1145,32 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
     /**
      * Creates a category filter Fingerprint from an array of positive example texts.
      *
-     * @param positiveExamples
+     * @param positive_examples
      * @param callbacks optional object containing functions to process the response and handle errors.
      * @returns {*}
      */
-    lite.createCategoryFilter = function (positiveExamples, callbacks) {
+    lite.createCategoryFilter = function (positive_examples, callbacks) {
 
         // Construct expressions array
         var expressions = [];
-        if (Array.isArray(positiveExamples)) {
-            var length = positiveExamples.length;
+        if (Array.isArray(positive_examples)) {
+            var length = positive_examples.length;
             for (var i = 0; i < length; i++) {
-                expressions.push({text: positiveExamples[i]});
+                expressions.push({text: positive_examples[i]});
             }
+        } else {
+            throw new Error('Input to createCategoryFilter was not an array');
         }
 
         if (typeof callbacks == 'function') {
-            callbacks =  wrapAsSuccessCallback(callbacks);
+            callbacks = wrapAsSuccessCallback(callbacks);
         }
-        if (callbacks && typeof callbacks.success == "function") {
+        if (callbacks && typeof callbacks.success == 'function') {
             callbacks.success = wrapCallback(callbacks.success, extractPositions);
         }
 
         return extractPositions(full.createCategoryFilter({
-            filter_name: "anonymous", body: {"positiveExamples": expressions}
+            filter_name: 'anonymous', positive_examples: expressions
         }, callbacks));
     };
 
@@ -1123,7 +1181,7 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     function extractCosineSimilarity(response) {
-        if (typeof response != "undefined") {
+        if (typeof response != 'undefined') {
             return response.cosineSimilarity;
         }
     }
@@ -1135,7 +1193,7 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
      * @returns {Array}
      */
     function extractSimilarTerms(response) {
-        if (typeof response != "undefined") {
+        if (typeof response != 'undefined') {
             var terms = [];
             for (var i = 0; i < response.length; i++) {
                 terms.push(response[i].term);
@@ -1164,7 +1222,7 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     function wrapCallback(callback, wrapper) {
-        if (typeof callback != "undefined") {
+        if (typeof callback != 'undefined') {
             var originalCallback = callback;
             callback = function (data) {
                 var response = wrapper(data);
@@ -1186,5 +1244,4 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
     }
 
     return lite;
-
 });

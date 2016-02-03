@@ -155,38 +155,38 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 	<tbody>
 		<tr>
     		<td>getRetinas</td>
-    		<td>Returns information about Retinas as an array of Retina objects.</td>
+    		<td>Returns information about Retinas as an array of Retina objects</td>
     		<td>none</td>
     		<td>retina_name (string)</td>
     	</tr>
     	<tr>
 			<td>getTerms</td>
-			<td>Returns information about terms as an array of term objects.</td>
+			<td>Returns information about terms as an array of term objects</td>
 			<td>none</td>
 			<td>term (string), start_index (number), max_results (number), get_fingerprint (boolean)</td>
 		</tr>
 		<tr>
 			<td>getContextsForTerm</td>
-			<td>Returns an array of all the contexts for a given term.</td>
+			<td>Returns an array of all the contexts for a given term</td>
 			<td>term (string)</td>
 			<td>start_index (number), max_results (number), get_fingerprint (boolean)</td>
 		</tr>
 		<tr>
 			<td>getSimilarTermsForTerm</td>
-			<td>Returns an array of similar terms for the specified input term.</td>
+			<td>Returns an array of similar terms for the specified input term</td>
 			<td>term (string)</td>
 			<td>context_id (number), start_index (number), max_results (number), pos_type (string), get_fingerprint 
 			(boolean)</td>
 		</tr>
 		<tr>
 			<td>getFingerprintForText</td>
-			<td>Returns a Retina representation (a Fingerprint) of the input text.</td>
+			<td>Returns a Retina representation (a Fingerprint) of the input text</td>
 			<td>text (string)</td>
 			<td>none</td>
 		</tr>
 		<tr>
 			<td>getKeywordsForText</td>
-			<td>Returns an array of keywords from the input text.</td>
+			<td>Returns an array of keywords from the input text</td>
 			<td>text (string)</td>
 			<td>none</td>
 		</tr>
@@ -199,27 +199,102 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 		</tr>
 		<tr>
 			<td>getSlicesForText</td>
-			<td>Returns an array of text objects corresponding to the input text, divided according to topic changes.</td>
+			<td>Returns an array of text objects corresponding to the input text, divided according to topic changes</td>
 			<td>text (string)</td>
 			<td>pos_tags (string)</td>
 		</tr>
 		<tr>
 			<td>getFingerprintsForTexts</td>
-			<td>Returns an array of Retina representations (Fingerprints) of each input text.</td>
-			<td>An array of texts</td>
+			<td>Returns an array of Retina representations (Fingerprints) of each input text</td>
+			<td>An array of texts (strings)</td>
 			<td>sparsity (number)</td>
 		</tr>
 		<tr>
 			<td>getLanguageForText</td>
-			<td>Returns an object containing information about the language of the specified text.</td>
+			<td>Returns an object containing information about the language of the specified text</td>
 			<td>text (string)</td>
 			<td>none</td>
 		</tr>
 		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			<td>getFingerprintForExpression</td>
+			<td>Returns a Retina representation (a Fingerprint) of the input expression</td>
+			<td>expression (JSON object encapsulating a Semantic Expression)</td>
+			<td>sparsity (number)</td>
+		</tr>
+		<tr>
+			<td>getContextsForExpression</td>
+			<td>Returns an array of contexts for the input expression</td>
+			<td>expression (JSON object encapsulating a Semantic Expression)</td>
+			<td>start_index (number), max_results (number), get_fingerprint (boolean), sparsity (number)</td>
+		</tr>
+		<tr>
+			<td>getSimilarTermsForExpression</td>
+			<td>Returns an array of similar terms for the input expression</td>
+			<td>expression (JSON object encapsulating a Semantic Expression)</td>
+			<td>context_id (number), start_index (number), max_results (number), pos_type (string), sparsity (number)
+			, get_fingerprint (boolean)</td>
+		</tr>
+		<tr>
+			<td>getFingerprintsForExpressions</td>
+			<td>Returns an array of Retina representations (Fingerprints) for an array of input expressions</td>
+			<td>expressions (array of JSON objects encapsulating Semantic Expressions)</td>
+			<td>sparsity (number)</td>
+		</tr>
+		<tr>
+			<td>getContextsForExpressions</td>
+			<td>Returns an array of context arrays for the input expressions</td>
+			<td>expressions (array of JSON objects encapsulating Semantic Expressions)</td>
+			<td>start_index (number), max_results (number), sparsity (number), get_fingerprint (boolean)</td>
+		</tr>
+		<tr>
+			<td>getSimilarTermsForExpressions</td>
+			<td>Returns an array of Term object arrays containing similar terms corresponding to the input array of 
+			expressions</td>
+			<td>expressions (array of JSON objects encapsulating Semantic Expressions)</td>
+			<td>context_id (number), start_index (number), max_results (number), pos_type (string), sparsity (number)
+			, get_fingerprint (boolean)</td>
+		</tr>
+		<tr>
+			<td>compare</td>
+			<td>Returns an object containing distance and similarity measures of the two input expression</td>
+			<td>comparison (array of JSON object pair encapsulating Semantic Expressions to compare)</td>
+			<td>none</td>
+		</tr>
+		<tr>
+			<td>compareBulk</td>
+			<td>Returns an array of objects containing distance and similarity measures of the input array of 
+			expressions to compare</td>
+			<td>comparisons (array of JSON object pairs encapsulating Semantic Expressions to compare)</td>
+			<td>none</td>
+		</tr>
+		<tr>
+			<td>getImage</td>
+			<td>Returns a visualization as an encoded string of the input expression</td>
+			<td>expression (JSON object encapsulating a Semantic Expression)</td>
+			<td>image_scalar (number), plot_shape (string), image_encoding (string), sparsity (number)</td>
+		</tr>
+		<tr>
+			<td>getImages</td>
+			<td>Returns an array of visualizations as encoded string of the input expressions</td>
+			<td>expressions (array of JSON objects encapsulating Semantic Expressions)</td>
+			<td>image_scalar (number), plot_shape (string), image_encoding (string), sparsity (number), 
+			get_fingerprint (boolean)</td>
+		</tr>
+		<tr>
+			<td>compareImage</td>
+			<td>Returns an overlay image for the two input elements specified by a JSON array containing two 
+			expressions</td>
+			<td>expressions (array of two JSON objects encapsulating two Semantic Expressions)</td>
+			<td>image_scalar (number), plot_shape (string), image_encoding (string)</td>
+		</tr>
+		<tr>
+			<td>createCategoryFilter</td>
+			<td>Returns a Semantic Fingerprint used to filter texts by together positive and negative examples of 
+			texts that should be positively and negatively classified by the filter</td>
+			<td>filter_name (string), positive_examples (array of JSON expression objects representing positive 
+			examples for the filter)</td>
+			<td>negative_examples (array of JSON expression objects representing negative examples for the 
+			filter)</td>
 		</tr>
 	</tbody>
 </table>
@@ -257,6 +332,36 @@ getFingerprintsForTexts
 
 getLanguageForText
 
+getFingerprintForExpression
+
+getContextsForExpression
+
+getSimilarTermsForExpression
+
+getFingerprintsForExpressions
+
+getContextsForExpressions
+
+getSimilarTermsForExpressions
+
+compare
+
+/* Make multiple comparisons in a single call */
+var comparison1 = [{text: texts["Synapse"]}, {text: texts["Skylab"]}];
+var comparison2 = [{text: texts["Mir"]}, {text: texts["Skylab"]}];
+fullClient.compareBulk({comparison: [comparison1, comparison2]});
+
+/* Create an image from an expression */
+fullClient.getImage({expression: {"text": "test"}})
+
+/* Create multiple images from multiple expressions in a single call */
+fullClient.getImages({expressions: [{"text": "test"}, {"text": "test"}]})
+
+/* Create a composite image showing the visual overlap between two expressions */
+fullClient.compareImage({expressions: [{"text": "test"}, {"text": "test"}]})
+
+/* Create a filter Fingerprint from example texts that should "pass through" the filter */
+fullClient.createCategoryFilter({filter_name: "test", positive_examples: [{"text": "test"}]})
 
 ```
 
