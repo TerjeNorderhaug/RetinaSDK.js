@@ -366,16 +366,13 @@ fullClient.getFingerprintsForTexts({"texts": ["first text", "second text"]}, cal
 fullClient.getLanguageForText({"text": "Dieser Text ist auf Deutsch"}, callback)
 
 /* Return the Fingerprint for an input expression */
-fullClient.getFingerprintForExpression({expression: {"text": "JavaScript is a dynamically typed object-oriented 
-programming language"}}, callback)
+fullClient.getFingerprintForExpression({expression: {"text": "JavaScript is a dynamically typed object-oriented programming language"}}, callback)
 
 /* Return contexts for an input expression */
-full.getContextsForExpression({expression: {"text": "JavaScript is a dynamically typed object-oriented programming 
-language"}}, callback)
+full.getContextsForExpression({expression: {"text": "JavaScript is a dynamically typed object-oriented programming language"}}, callback)
 
 /* Return similar terms for an input expression */
-full.getSimilarTermsForExpression({expression: {"text": "JavaScript is a dynamically typed object-oriented programming
- language"}}, callback)
+full.getSimilarTermsForExpression({expression: {"text": "JavaScript is a dynamically typed object-oriented programming language"}}, callback)
 
 /* Return Fingerprints for multiple semantic expressions */
 fullClient.getFingerprintsForExpressions({expressions: [{"text": "first text"}, {"text": "second text"}]}, callback)
