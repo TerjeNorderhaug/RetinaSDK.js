@@ -33,7 +33,7 @@ with a valid API Key.
 
 ## Usage
 
-RetinaSDK.js offers two abstractions of the Cortical.io Retina API, a lightweight module that offers simplified 
+**RetinaSDK.js** offers two abstractions of the Cortical.io Retina API, a lightweight module that offers simplified 
 access to the most common and useful API functions available and a full version module that gives the user complete 
 control over various parameter settings and complete access to all API endpoints.
  
@@ -46,48 +46,48 @@ lightweight client by passing your API key as follows:
 
 ```javascript
 /* Create "lightweight" LiteClient instance */
-var lite = retinaSDK.LiteClient(your_api_key)
+var liteClient = retinaSDK.LiteClient(your_api_key)
 ```
 
 Once you've created a client instance, you can start using it to make calls to the Retina API:
 
 ```javascript
 /* Retrieve similar terms */
-lite.getSimilarTerms("javascript");
+liteClient.getSimilarTerms("javascript");
 > ["javascript", "browser", "html", "browsers", "api", "xml", "functionality", "microsoft", "runtime", "perl", "implementations", "css", "software", "unix", "files", "gui", "server", "plugin", "internet explorer", "linux"]
 
 /* Return keywords of a text */
-lite.getKeywords("Vienna is the capital and largest city of Austria, and one of the nine states of Austria");
+liteClient.getKeywords("Vienna is the capital and largest city of Austria, and one of the nine states of Austria");
 > ["austria", "vienna"]
 
 /* Compute a semantic fingerprint for an input text */
-lite.getFingerprint("apple")
+liteClient.getFingerprint("apple")
 > Array[328]
 
 /* Compute the similarity between two texts */
-lite.compare("apple", "microsoft")
+liteClient.compare("apple", "microsoft")
 > 0.4024390243902438
 
 /* Compute the similarity between two fingerprints */
-var appleFP = lite.getFingerprint("apple")
-var microsoftFP = lite.getFingerprint("microsoft")
-lite.compare(appleFP, microsoftFP)
+var appleFP = liteClient.getFingerprint("apple")
+var microsoftFP = liteClient.getFingerprint("microsoft")
+liteClient.compare(appleFP, microsoftFP)
 > 0.4024390243902438
 
 /* Compute the similarity between a fingerprint and a text */
-var appleFP = lite.getFingerprint("apple")
-lite.compare(appleFP, "microsoft")
+var appleFP = liteClient.getFingerprint("apple")
+liteClient.compare(appleFP, "microsoft")
 > 0.4024390243902438
 
 /* Construct a composite Fingerprint from an array of texts to use for semantic filtering */
-var neurologyFilter = lite.createCategoryFilter(["neuron", "synapse", "neocortex"])
+var neurologyFilter = liteClient.createCategoryFilter(["neuron", "synapse", "neocortex"])
 console.log(neurologyFilter)
 > Array[677]
 
 /* Use the neurologyFilter computed above to compare and classify new texts. */ 
-lite.compare(neurologyFilter, "skylab")
+liteClient.compare(neurologyFilter, "skylab")
 > 0.056544622895956895 // low semantic similarity -> negative classification
-lite.compare(neurologyFilter, "cortical column")
+liteClient.compare(neurologyFilter, "cortical column")
 > 0.35455851788907006 // high semantic similarity -> positive classification
 ```
 
@@ -105,12 +105,12 @@ the success function and failed requests will result in an exception.
 
 ```javascript
 /* Asynchronously retrieve similar terms with a callback function */
-lite.getSimilarTerms("javascript", function(similarTerms) {
+liteClient.getSimilarTerms("javascript", function(similarTerms) {
     console.log(similarTerms)
 });
 
 /* Asynchronously retrieve similar terms with an object containing success and error callbacks */
-lite.getSimilarTerms("javascript", {success: function(similarTerms) {
+liteClient.getSimilarTerms("javascript", {success: function(similarTerms) {
     console.log(similarTerms)
 }, error: function(response){
     // handle error
@@ -128,7 +128,7 @@ As with the LiteClient, the FullClient must be instantiated with a valid Cortica
 
 ```javascript
 /* Create FullClient instance */
-var full = retinaSDK.FullClient(your_api_key)
+var fullClient = retinaSDK.FullClient(your_api_key)
 ```
 
 Additional parameters can also be passed when creating a FullClient instance to specify the host address (in case you
@@ -137,8 +137,30 @@ Additional parameters can also be passed when creating a FullClient instance to 
  
 ```javascript
 /* Create FullClient instance with explicit server address and Retina name */
-var full = retinaSDK.FullClient(your_api_key, "http://api.cortical.io/rest/", "en_associative")
- ```
+var fullClient = retinaSDK.FullClient(your_api_key, "http://api.cortical.io/rest/", "en_associative")
+
+#### Semantic Expressions
+
+The semantic fingerprint is the basic unit within the Retina API. A text or a term can be resolved into a fingerprint
+ using the API. Fingerprints can also be combined in *expressions*, and a number of methods
+ expect input in our expression language. This is explained in more detail [here](http://documentation.cortical.io/the_power_of_expressions.html). 
+
+Expressions are essentially `json` strings with reserved keys: `term`, `text`, and `positions`.
+In the previous example, we note that the `compare` function takes as argument a list of two such expressions. 
+In JavaScript we can create a list of two objects with (in this case) `term` elements.
+
+```javascript
+fullClient.compare({comparison: [{"term": "synapse"}, {"term": "skylab"}]})
+> Object {euclideanDistance: 0.9679144385026738, sizeRight: 146, overlappingLeftRight: 0.02631578947368421, overlappingRightLeft: 0.0410958904109589, weightedScoring: 0.6719223186964691…}
+```
+
+Expressions can also be connected to each other with the operators `and`, `or` and `sub`.
+ 
+```javascript
+/* Subtract the meaning of tiger from the term 'jaguar' to compute a Fingerprint composed of the car-related meaning 
+of 'jaguar' */
+fullClient.getFingerprintForExpression({expression: {"sub": [{"term": "jaguar"}, {"term": "tiger"}]}})
+```
 
 #### Callbacks
 
@@ -308,46 +330,52 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 
 ```javascript
 /* Create FullClient instance */
-var full = retinaSDK.FullClient(your_api_key)
+var fullClient = retinaSDK.FullClient(your_api_key)
 
 /* Retrieve an array of all available Retinas */
-full.getRetinas(callback)
+fullClient.getRetinas(callback)
 
 /* Retrieve information about a specific term */
-full.getTerms({term: "javascript"}, callback)
+fullClient.getTerms({term: "javascript"}, callback)
 
 /* Get contexts for a given term */
-full.getContextsForTerm({term: "javascript", max_results: 3}, callback)
+fullClient.getContextsForTerm({term: "javascript", max_results: 3}, callback)
 
 /* Get similar terms and their Fingerprints for a given term */
-full.getSimilarTermsForTerm({term: "javascript", get_fingerprint: true}, callback)
+fullClient.getSimilarTermsForTerm({term: "javascript", get_fingerprint: true}, callback)
 
 /* Encode a text into a Semantic Fingerprint */
-full.getFingerprintForText({text: "JavaScript is a dynamically typed object-oriented programming language"}, callback)
+fullClient.getFingerprintForText({"text": "JavaScript is a dynamically typed object-oriented programming language"}, 
+callback)
 
 /* Return keywords from a text */
-full.getKeywordsForText({text: "JavaScript is a dynamically typed object-oriented programming language"}, callback)
+fullClient.getKeywordsForText({"text": "JavaScript is a dynamically typed object-oriented programming language"}, 
+callback)
 
 /* Returns tokens from an input text */
-full.getTokensForText({text: "JavaScript is a dynamically typed object-oriented programming language", pos_tags: "NN"}, callback)
+fullClient.getTokensForText({"text": "JavaScript is a dynamically typed object-oriented programming language",  
+pos_tags: "NN, NNP"}, callback)
 
 /* Slice the input text according to semantic changes (works best on larger texts of at least several sentences) */
-full.getSlicesForText({text: text}, callback)
+fullClient.getSlicesForText({"text": text}, callback)
 
 /* Return Semantic Fingerprints for numerous texts in a single call */
-full.getFingerprintsForTexts({texts: ["first text", "second text"]}, callback)
+fullClient.getFingerprintsForTexts({"texts": ["first text", "second text"]}, callback)
 
 /* Detect the language for an input text */
-full.getLanguageForText({text: "Dieser Text ist auf Deutsch"}, callback)
+fullClient.getLanguageForText({"text": "Dieser Text ist auf Deutsch"}, callback)
 
 /* Return the Fingerprint for an input expression */
-full.getFingerprintForExpression({expression: {text: "JavaScript is a dynamically typed object-oriented programming language"}}, callback)
+fullClient.getFingerprintForExpression({expression: {"text": "JavaScript is a dynamically typed object-oriented 
+programming language"}}, callback)
 
 /* Return contexts for an input expression */
-full.getContextsForExpression({expression: {text: "JavaScript is a dynamically typed object-oriented programming language"}}, callback)
+full.getContextsForExpression({expression: {"text": "JavaScript is a dynamically typed object-oriented programming 
+language"}}, callback)
 
 /* Return similar terms for an input expression */
-full.getSimilarTermsForExpression({expression: {text: "JavaScript is a dynamically typed object-oriented programming language"}}, callback)
+full.getSimilarTermsForExpression({expression: {"text": "JavaScript is a dynamically typed object-oriented programming
+ language"}}, callback)
 
 /* Return Fingerprints for multiple semantic expressions */
 fullClient.getFingerprintsForExpressions({expressions: [{"text": "first text"}, {"text": "second text"}]}, callback)
@@ -362,8 +390,8 @@ fullClient.getSimilarTermsForExpressions({expressions: [{"text": "first text"}, 
 fullClient.compare({comparison: [{term: "synapse"}, {term: "skylab"}]}, callback)
 
 /* Make multiple comparisons in a single call */
-var comparison1 = [{term: "synapse"}, {term: "skylab"}];
-var comparison2 = [{term: "mir"}, {text: "skylab was a space station"}];
+var comparison1 = [{"term": "synapse"}, {"term": "skylab"}];
+var comparison2 = [{"term": "mir"}, {"text": "skylab was a space station"}];
 fullClient.compareBulk({comparisons: [comparison1, comparison2]}, callback);
 
 /* Create an image from an expression */
@@ -379,6 +407,14 @@ fullClient.compareImage({expressions: [{"text": "first text"}, {"text": "second 
 fullClient.createCategoryFilter({filter_name: "test", positive_examples: [{"text": "JavaScript is a dynamically typed object-oriented programming language"}]}, callback)
 
 ```
+
+## Support
+
+For further documentation about the Retina-API and information on cortical.io's 'Retina' technology please see our 
+[Knowledge Base](http://www.cortical.io/resources_tutorials.html). Also the `tests` folder contains more examples of how to use the 
+clients. 
+
+If you have any questions or problems please visit our [forum](http://www.cortical.io/resources_forum.html).
 
 ### Changelog
 
