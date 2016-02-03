@@ -440,7 +440,11 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
     api.getTokensForText = function (params, callbacks) {
         if (typeof params == 'string') {
             params = {body: params}
-        } else if (params['pos_tags']) {
+        } else if (typeof params.text != 'undefined') {
+            params.body = params.text;
+            delete params.text;
+        }
+        if (params['pos_tags']) {
             params['POStags'] = params['pos_tags'];
             delete params['pos_tags'];
         }
@@ -448,7 +452,7 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
             callbacks = wrapAsSuccessCallback(callbacks);
         }
         checkForRequiredParameters(params, ['body']);
-        return post("text/tokenize", params, callbacks);
+        return post('text/tokenize', params, callbacks);
     };
 
     /**
@@ -478,18 +482,21 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
     api.getSlicesForText = function (params, callbacks) {
         if (typeof params == 'string') {
             params = {body: params}
+        } else if (typeof params.text != 'undefined') {
+            params.body = params.text;
+            delete params.text;
         }
         if (typeof callbacks == 'function') {
             callbacks = wrapAsSuccessCallback(callbacks);
         }
         checkForRequiredParameters(params, ['body']);
-        return post("text/slices", params, callbacks);
+        return post('text/slices', params, callbacks);
     };
 
     /**
      * Returns an array of Retina representations (Fingerprints) of each input text.
      *
-     * Required parameters: an object with a body field containing an array of texts to encode.
+     * Required parameters: texts (array of texts to encode)
      *
      * Optional parameters: sparsity (number)
      *
@@ -502,18 +509,27 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     api.getFingerprintsForTexts = function (params, callbacks) {
+        var length = 0;
+        var i = 0;
         if (Array.isArray(params)) {
-            var length = params.length;
-            for (var i = 0; i < length; i++) {
+            length = params.length;
+            for (i = 0; i < length; i++) {
                 params[i] = {"text": params[i]};
             }
             params = {body: params};
+        } else if (typeof params['texts'] != 'undefined') {
+            length = params['texts'].length;
+            for (i = 0; i < length; i++) {
+                params['texts'][i] = {"text": params['texts'][i]};
+            }
+            params.body = params['texts'];
+            delete params['texts'];
         }
         if (typeof callbacks == 'function') {
             callbacks = wrapAsSuccessCallback(callbacks);
         }
         checkForRequiredParameters(params, ['body']);
-        return post("text/bulk", params, callbacks);
+        return post('text/bulk', params, callbacks);
     };
 
     /**
@@ -543,7 +559,7 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
             callbacks = wrapAsSuccessCallback(callbacks);
         }
         checkForRequiredParameters(params, ['body']);
-        return post("text/detect_language", params, callbacks);
+        return post('text/detect_language', params, callbacks);
     };
 
     /**
@@ -583,7 +599,7 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
             params['body'] = params['expression'];
             delete params['expression'];
         }
-        return extractPositionsFromFingerprint(post("expressions", params, callbacks));
+        return extractPositionsFromFingerprint(post('expressions', params, callbacks));
     };
 
     /**

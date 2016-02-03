@@ -206,7 +206,7 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 		<tr>
 			<td>getFingerprintsForTexts</td>
 			<td>Returns an array of Retina representations (Fingerprints) of each input text</td>
-			<td>An array of texts (strings)</td>
+			<td>texts (array of strings)</td>
 			<td>sparsity (number)</td>
 		</tr>
 		<tr>
@@ -251,8 +251,7 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 			<td>Returns an array of Term object arrays containing similar terms corresponding to the input array of 
 			expressions</td>
 			<td>expressions (array of JSON objects encapsulating Semantic Expressions)</td>
-			<td>context_id (number), start_index (number), max_results (number), pos_type (string), sparsity (number)
-			, get_fingerprint (boolean)</td>
+			<td>context_id (number), start_index (number), max_results (number), pos_type (string), sparsity (number), get_fingerprint (boolean)</td>
 		</tr>
 		<tr>
 			<td>compare</td>
@@ -321,47 +320,57 @@ full.getSimilarTermsForTerm({term: "javascript", get_fingerprint: true}, callbac
 full.getFingerprintForText({text: "JavaScript is a dynamically typed object-oriented programming language"}, callback)
 
 /* Return keywords from a text */
-getKeywordsForText
+full.getKeywordsForText({text: "JavaScript is a dynamically typed object-oriented programming language"}, callback)
 
 /* Returns tokens from an input text */
-getTokensForText
+full.getTokensForText({text: "JavaScript is a dynamically typed object-oriented programming language", pos_tags: "NN"}, callback)
 
-getSlicesForText
+/* Slice the input text according to semantic changes (works best on larger texts of at least several sentences) */
+full.getSlicesForText({text: text}, callback)
 
-getFingerprintsForTexts
+/* Return Semantic Fingerprints for numerous texts in a single call */
+full.getFingerprintsForTexts({texts: ["first text", "second text"]}, callback)
 
-getLanguageForText
+/* Detect the language for an input text */
+full.getLanguageForText({text: "Dieser Text ist auf Deutsch"}, callback)
 
-getFingerprintForExpression
+/* Return the Fingerprint for an input expression */
+full.getFingerprintForExpression({expression: {text: "JavaScript is a dynamically typed object-oriented programming language"}}, callback)
 
-getContextsForExpression
+/* Return contexts for an input expression */
+full.getContextsForExpression({expression: {text: "JavaScript is a dynamically typed object-oriented programming language"}}, callback)
 
-getSimilarTermsForExpression
+/* Return similar terms for an input expression */
+full.getSimilarTermsForExpression({expression: {text: "JavaScript is a dynamically typed object-oriented programming language"}}, callback)
 
-getFingerprintsForExpressions
+/* Return Fingerprints for multiple semantic expressions */
+fullClient.getFingerprintsForExpressions({expressions: [{"text": "first text"}, {"text": "second text"}]}, callback)
 
-getContextsForExpressions
+/* Return contexts for multiple semantic expressions */
+fullClient.getContextsForExpressions({expressions: [{"text": "first text"}, {"text": "second text"}]}, callback)
 
-getSimilarTermsForExpressions
+/* Return similar terms for multiple semantic expressions */
+fullClient.getSimilarTermsForExpressions({expressions: [{"text": "first text"}, {"text": "second text"}]}, callback)
 
-compare
+/* Compute the semantic similarity of two input expressions */
+fullClient.compare({comparison: [{term: "synapse"}, {term: "skylab"}]}, callback)
 
 /* Make multiple comparisons in a single call */
-var comparison1 = [{text: texts["Synapse"]}, {text: texts["Skylab"]}];
-var comparison2 = [{text: texts["Mir"]}, {text: texts["Skylab"]}];
-fullClient.compareBulk({comparison: [comparison1, comparison2]});
+var comparison1 = [{term: "synapse"}, {term: "skylab"}];
+var comparison2 = [{term: "mir"}, {text: "skylab was a space station"}];
+fullClient.compareBulk({comparisons: [comparison1, comparison2]}, callback);
 
 /* Create an image from an expression */
-fullClient.getImage({expression: {"text": "test"}})
+fullClient.getImage({expression: {"term": "test"}}, callback)
 
 /* Create multiple images from multiple expressions in a single call */
-fullClient.getImages({expressions: [{"text": "test"}, {"text": "test"}]})
+fullClient.getImages({expressions: [{"text": "first text"}, {"text": "second text"}]}, callback)
 
 /* Create a composite image showing the visual overlap between two expressions */
-fullClient.compareImage({expressions: [{"text": "test"}, {"text": "test"}]})
+fullClient.compareImage({expressions: [{"text": "first text"}, {"text": "second text"}]}, callback)
 
 /* Create a filter Fingerprint from example texts that should "pass through" the filter */
-fullClient.createCategoryFilter({filter_name: "test", positive_examples: [{"text": "test"}]})
+fullClient.createCategoryFilter({filter_name: "test", positive_examples: [{"text": "JavaScript is a dynamically typed object-oriented programming language"}]}, callback)
 
 ```
 
