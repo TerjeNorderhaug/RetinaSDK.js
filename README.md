@@ -138,6 +138,7 @@ Additional parameters can also be passed when creating a FullClient instance to 
 ```javascript
 /* Create FullClient instance with explicit server address and Retina name */
 var fullClient = retinaSDK.FullClient(your_api_key, "http://api.cortical.io/rest/", "en_associative")
+```
 
 #### Semantic Expressions
 
@@ -154,7 +155,7 @@ fullClient.compare({comparison: [{"term": "synapse"}, {"term": "skylab"}]})
 > Object {euclideanDistance: 0.9679144385026738, sizeRight: 146, overlappingLeftRight: 0.02631578947368421, overlappingRightLeft: 0.0410958904109589, weightedScoring: 0.6719223186964691…}
 ```
 
-Expressions can also be connected to each other with the operators `and`, `or` and `sub`.
+Expressions can also be connected to each other with the operators `and`, `or` and `sub`:
  
 ```javascript
 /* Subtract the meaning of tiger from the term 'jaguar' to compute a Fingerprint composed of the car-related meaning 
