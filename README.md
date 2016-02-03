@@ -119,6 +119,11 @@ lite.getSimilarTerms("javascript", {success: function(similarTerms) {
 
 ### FullClient Module
 
+The FullClient module provides complete access to the entire Retina API and allows for more flexibility in configuring 
+request parameters than the LiteClient module. Some functionality included with the FullClient not available in the 
+LiteClient are operations on expressions, images and bulk requests. A full listing of the FullClient's methods is 
+provided below (Available Functions and Parameters).
+
 As with the LiteClient, the FullClient must be instantiated with a valid Cortical.io API key:
 
 ```javascript
@@ -127,7 +132,8 @@ var full = retinaSDK.FullClient(your_api_key)
 ```
 
 Additional parameters can also be passed when creating a FullClient instance to specify the host address (in case you
- have access to your own Retina API service, for example by running your own [AWS](https://aws.amazon.com/marketplace/seller-profile?id=c88ca878-a648-464c-b29b-38ba057bd2f5) or [Azure instance](https://azure.microsoft.com/en-us/marketplace/partners/cortical-io/cortical-io-retinaservice-eng-gen/)) and Retina name.
+ have access to your own Retina API service, for example by running your own [AWS](https://aws.amazon.com/marketplace/seller-profile?id=c88ca878-a648-464c-b29b-38ba057bd2f5) or [Azure instance](https://azure.microsoft.com/en-us/marketplace/partners/cortical-io/cortical-io-retinaservice-eng-gen/)) and Retina name, so you can 
+ configure a specific Retina for subsequent calls.
  
 ```javascript
 /* Create FullClient instance with explicit server address and Retina name */
