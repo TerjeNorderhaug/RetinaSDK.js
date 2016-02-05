@@ -341,7 +341,7 @@ QUnit.asyncTest("fullclient.getTerms, with params, no callback", function (asser
     var length = 20;
     var terms = fullClient.getTerms({term: termString, start_index: 0, max_results: length});
     assert.ok(terms.length == length, "Return fixed number of terms.");
-    assert.equal(terms[0].term.substr(0,3), termString.substr(0,3), "Return term matching wildcard query.");
+    assert.equal(terms[0].term.substr(0, 3), termString.substr(0, 3), "Return term matching wildcard query.");
     QUnit.start();
 });
 
@@ -354,7 +354,7 @@ QUnit.asyncTest("fullclient.getTerms, with params, callback function", function 
     var length = 20;
     var success = function (terms) {
         assert.ok(terms.length == length, "Return fixed number of terms.");
-        assert.equal(terms[0].term.substr(0,3), termString.substr(0,3), "Return term matching wildcard query.");
+        assert.equal(terms[0].term.substr(0, 3), termString.substr(0, 3), "Return term matching wildcard query.");
         QUnit.start();
     };
     fullClient.getTerms({term: termString, start_index: 0, max_results: length}, success);
@@ -369,7 +369,7 @@ QUnit.asyncTest("fullclient.getTerms, with params, callbacks object", function (
     var length = 20;
     var success = function (terms) {
         assert.ok(terms.length == length, "Return fixed number of terms.");
-        assert.equal(terms[0].term.substr(0,3), termString.substr(0,3), "Return term matching wildcard query.");
+        assert.equal(terms[0].term.substr(0, 3), termString.substr(0, 3), "Return term matching wildcard query.");
         QUnit.start();
     };
     fullClient.getTerms({term: termString, start_index: 0, max_results: length}, {
@@ -735,41 +735,6 @@ QUnit.asyncTest("testImageForExpression", function (assert) {
     fullClient.getImage({expression: {text: texts["Synapse"]}}, success);
 });
 
-/*
- QUnit.asyncTest("testImageForString", function (assert) {
- // TODO assert.expect(2);
-
- var callback = function (image) {
- // TODO debugger;
- assert.ok(image != null, "Return a non-null object");
- assert.ok(image.length > 1, "Image string seems plausibly valid");
- var i = new Image();
- i.src = 'data:image/png;base64,' + image;
- // document.body.appendChild(i);
- // QUnit.start();
- };
-
- fullClient.getImage(texts["Synapse"], callback);
- });
- */
-
-/*
- QUnit.asyncTest("testImages", function (assert) {
- // assert.expect(2);
-
- var callback = function (images) {
- // TODO debugger;
- // QUnit.start();
- };
-
- var images = [];
- images.push({text: texts["Synapse"]});
- images.push({text: texts["Skylab"]});
-
- fullClient.getImages(images, callback);
- });
- */
-
 QUnit.asyncTest("testImagesShouldThrowError", function (assert) {
     assert.expect(1);
     try {
@@ -779,30 +744,3 @@ QUnit.asyncTest("testImagesShouldThrowError", function (assert) {
     }
     QUnit.start();
 });
-
-/*
- QUnit.asyncTest("testCompareImages", function (assert) {
- // assert.expect(2);
-
- var callback = function (images) {
- // TODO
- // QUnit.start();
- };
-
- var images = [];
- images.push({text: texts["Synapse"]});
- images.push({text: texts["Skylab"]});
-
- fullClient.compareImages(images, callback);
- });
- */
-
-// TODO api.core.createCategoryFilter
-
-// TODO api.basic.getSimilarTerms
-
-// TODO api.basic.getKeywords
-
-// TODO api.basic.getFingerprint
-
-// TODO api.basic.compare
