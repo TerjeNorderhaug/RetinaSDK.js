@@ -147,7 +147,7 @@ The semantic fingerprint is the basic unit within the Retina API. A text or a te
  expect input in our expression language. This is explained in more detail [here](http://documentation.cortical.io/the_power_of_expressions.html). 
 
 Expressions are essentially `json` strings with reserved keys: `term`, `text`, and `positions`.
-In the previous example, we note that the `compare` function takes as argument a list of two such expressions. 
+In the following example, we note that the `compare` function takes a list of two such expressions as arguments. 
 In JavaScript we can create a list of two objects with (in this case) `term` elements.
 
 ```javascript
@@ -370,10 +370,10 @@ fullClient.getLanguageForText({"text": "Dieser Text ist auf Deutsch"}, callback)
 fullClient.getFingerprintForExpression({expression: {"text": "JavaScript is a dynamically typed object-oriented programming language"}}, callback)
 
 /* Return contexts for an input expression */
-full.getContextsForExpression({expression: {"text": "JavaScript is a dynamically typed object-oriented programming language"}}, callback)
+fullClient.getContextsForExpression({expression: {"text": "JavaScript is a dynamically typed object-oriented programming language"}}, callback)
 
 /* Return similar terms for an input expression */
-full.getSimilarTermsForExpression({expression: {"text": "JavaScript is a dynamically typed object-oriented programming language"}}, callback)
+fullClient.getSimilarTermsForExpression({expression: {"text": "JavaScript is a dynamically typed object-oriented programming language"}}, callback)
 
 /* Return Fingerprints for multiple semantic expressions */
 fullClient.getFingerprintsForExpressions({expressions: [{"text": "first text"}, {"text": "second text"}]}, callback)
@@ -402,15 +402,17 @@ fullClient.getImages({expressions: [{"text": "first text"}, {"text": "second tex
 fullClient.compareImage({expressions: [{"text": "first text"}, {"text": "second text"}]}, callback)
 
 /* Create a filter Fingerprint from example texts that should "pass through" the filter */
-fullClient.createCategoryFilter({filter_name: "test", positive_examples: [{"text": "JavaScript is a dynamically typed object-oriented programming language"}]}, callback)
+fullClient.createCategoryFilter({filter_name: "test", positive_examples: ["JavaScript is a dynamically typed 
+object-oriented programming language", "jQuery is a cross-platform JavaScript library designed to simplify the 
+client-side scripting of HTML."]}, callback)
 
 ```
 
 ## Support
 
-For further documentation about the Retina-API and information on cortical.io's 'Retina' technology please see our 
+For further documentation about the Retina API and information on Cortical.io's 'Retina' technology please see our 
 [Knowledge Base](http://www.cortical.io/resources_tutorials.html). Also the `test` folder contains more examples of how to use the 
-clients. 
+client modules. 
 
 If you have any questions or problems please visit our [forum](http://www.cortical.io/resources_forum.html).
 

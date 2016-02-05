@@ -209,6 +209,21 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
         return {success: callback};
     }
 
+    /**
+     * Creates an array of expressions from an array of strings.
+     *
+     * @param strings
+     * @returns {Array}
+     */
+    function createExpressionsArray(strings) {
+        var expressions = [];
+        var length = strings.length;
+        for (var i = 0; i < length; i++) {
+            expressions.push({text: strings[i]});
+        }
+        return expressions;
+    }
+
     // Public methods
     var api = {};
 
@@ -1023,17 +1038,10 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
      * Returns a Semantic Fingerprint used to filter texts by intelligently piecing together positive and negative
      * examples of texts that should be positively and negatively classified by the filter.
      *
-     * Required parameters: filter_name (string) and an array of JSON expression objects "positive_examples"
-     * representing positive examples for the filter.
+     * Required parameters: filter_name (string) and positive_examples (array of strings representing positive examples
+     * for the filter).
      *
-     * Optional parameters: an array of JSON expression objects "negative_examples" representing negative examples
-     * for the filter.
-     *
-     * Expressions are built in JSON syntax by combining Retina objects together with the optional operators "and", "or"
-     * and "sub". An expression can contain Terms ({"term": "term"}), Fingerprints ({"positions": [1,2,...]}), Texts
-     * ({"text": "this is a text"}) and even nested expressions. A detailed explanation of the syntax for
-     * expressions, along with examples, can be found here:
-     * http://documentation.cortical.io/the_power_of_expressions.html
+     * Optional parameters: negative_examples (array of strings representing negative examples for the filter).
      *
      * Response format: object {categoryName: string, positions: [number]}
      *
@@ -1047,12 +1055,19 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
         }
         checkForRequiredParameters(params, ['filter_name']);
         checkForRequiredParameters(params, ['positive_examples']);
+        if (!Array.isArray(params['positive_examples'])) {
+            throw new Error('Input to createCategoryFilter was not an array');
+        }
+
         // Reconstruct params object
         params.body = {};
-        params.body['positiveExamples'] = params['positive_examples'];
+        params.body['positiveExamples'] = createExpressionsArray(params['positive_examples']);
         delete params['positive_examples'];
         if (typeof params['negative_examples'] != 'undefined') {
-            params.body['negativeExamples'] = params['negative_examples'];
+            if (!Array.isArray(params['negative_examples'])) {
+                throw new Error('Input to createCategoryFilter was not an array');
+            }
+            params.body['negativeExamples'] = createExpressionsArray(params['negative_examples']);
             delete params['negative_examples'];
         }
         return post('classify/create_category_filter', params, callbacks);
@@ -1166,18 +1181,6 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
      * @returns {*}
      */
     lite.createCategoryFilter = function (positive_examples, callbacks) {
-
-        // Construct expressions array
-        var expressions = [];
-        if (Array.isArray(positive_examples)) {
-            var length = positive_examples.length;
-            for (var i = 0; i < length; i++) {
-                expressions.push({text: positive_examples[i]});
-            }
-        } else {
-            throw new Error('Input to createCategoryFilter was not an array');
-        }
-
         if (typeof callbacks == 'function') {
             callbacks = wrapAsSuccessCallback(callbacks);
         }
@@ -1186,7 +1189,7 @@ retinaSDK.LiteClient = (function (apiKey, apiServer, retina) {
         }
 
         return extractPositions(full.createCategoryFilter({
-            filter_name: 'anonymous', positive_examples: expressions
+            filter_name: 'anonymous', positive_examples: positive_examples
         }, callbacks));
     };
 
