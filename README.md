@@ -408,7 +408,7 @@ fullClient.createCategoryFilter({filter_name: "test", positive_examples: ["JavaS
 
 ## Support
 
-For further documentation about the Retina API and information on Cortical.io's 'Retina' technology please see our 
+For further documentation about the Retina API and information on Cortical.io's `Retina` technology please see our 
 [Knowledge Base](http://www.cortical.io/resources_tutorials.html). Also the `test` folder contains more examples of how to use the 
 client modules. 
 
