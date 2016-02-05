@@ -260,8 +260,7 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 			<td>getSimilarTermsForExpression</td>
 			<td>Returns an array of similar terms for the input expression</td>
 			<td>expression (JSON object encapsulating a Semantic Expression)</td>
-			<td>context_id (number), start_index (number), max_results (number), pos_type (string), sparsity (number)
-			, get_fingerprint (boolean)</td>
+			<td>context_id (number), start_index (number), max_results (number), pos_type (string), sparsity (number), get_fingerprint (boolean)</td>
 		</tr>
 		<tr>
 			<td>getFingerprintsForExpressions</td>
@@ -346,16 +345,13 @@ fullClient.getContextsForTerm({term: "javascript", max_results: 3}, callback)
 fullClient.getSimilarTermsForTerm({term: "javascript", get_fingerprint: true}, callback)
 
 /* Encode a text into a Semantic Fingerprint */
-fullClient.getFingerprintForText({"text": "JavaScript is a dynamically typed object-oriented programming language"}, 
-callback)
+fullClient.getFingerprintForText({"text": "JavaScript is a dynamically typed object-oriented programming language"}, callback)
 
 /* Return keywords from a text */
-fullClient.getKeywordsForText({"text": "JavaScript is a dynamically typed object-oriented programming language"}, 
-callback)
+fullClient.getKeywordsForText({"text": "JavaScript is a dynamically typed object-oriented programming language"}, callback)
 
 /* Returns tokens from an input text */
-fullClient.getTokensForText({"text": "JavaScript is a dynamically typed object-oriented programming language",  
-pos_tags: "NN, NNP"}, callback)
+fullClient.getTokensForText({"text": "JavaScript is a dynamically typed object-oriented programming language", pos_tags: "NN, NNP"}, callback)
 
 /* Slice the input text according to semantic changes (works best on larger texts of at least several sentences) */
 fullClient.getSlicesForText({"text": text}, callback)
