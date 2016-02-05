@@ -402,9 +402,7 @@ fullClient.getImages({expressions: [{"text": "first text"}, {"text": "second tex
 fullClient.compareImage({expressions: [{"text": "first text"}, {"text": "second text"}]}, callback)
 
 /* Create a filter Fingerprint from example texts that should "pass through" the filter */
-fullClient.createCategoryFilter({filter_name: "test", positive_examples: ["JavaScript is a dynamically typed 
-object-oriented programming language", "jQuery is a cross-platform JavaScript library designed to simplify the 
-client-side scripting of HTML."]}, callback)
+fullClient.createCategoryFilter({filter_name: "test", positive_examples: ["JavaScript is a dynamically typed object-oriented programming language", "jQuery is a cross-platform JavaScript library designed to simplify the client-side scripting of HTML."]}, callback)
 
 ```
 
