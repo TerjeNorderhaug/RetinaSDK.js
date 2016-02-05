@@ -319,9 +319,9 @@ As with the LiteClient, all calls to the FullClient accept an optional callback 
 			<td>createCategoryFilter</td>
 			<td>Returns a Semantic Fingerprint used to filter texts by together positive and negative examples of 
 			texts that should be positively and negatively classified by the filter</td>
-			<td>filter_name (string), positive_examples (array of JSON expression objects representing positive 
-			examples for the filter)</td>
-			<td>negative_examples (array of JSON expression objects representing negative examples for the 
+			<td>filter_name (string), positive_examples (array of strings representing positive examples for the 
+			filter)</td>
+			<td>negative_examples (array of strings representing negative examples for the 
 			filter)</td>
 		</tr>
 	</tbody>
