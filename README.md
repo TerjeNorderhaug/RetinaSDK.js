@@ -158,8 +158,7 @@ fullClient.compare({comparison: [{"term": "synapse"}, {"term": "skylab"}]})
 Expressions can also be connected to each other with the operators `and`, `or` and `sub`:
  
 ```javascript
-/* Subtract the meaning of tiger from the term 'jaguar' to compute a Fingerprint composed of the car-related meaning 
-of 'jaguar' */
+/* Subtract the meaning of tiger from the term 'jaguar' to compute a Fingerprint composed of the car-related meaning of 'jaguar' */
 fullClient.getFingerprintForExpression({expression: {"sub": [{"term": "jaguar"}, {"term": "tiger"}]}})
 ```
 
