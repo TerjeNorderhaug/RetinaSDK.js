@@ -52,6 +52,7 @@ retinaSDK.FullClient = (function (apiKey, apiServer, retina) {
         httpRequest.setRequestHeader("Content-type", "application/json");
         httpRequest.setRequestHeader("api-key", apiKey);
         httpRequest.setRequestHeader("api-client", "js_1.0");
+        httpRequest.responseURL = url;
 
         if (isAsync) {
             // Send asynchronous request and call configured callback functions on success/error
